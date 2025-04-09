@@ -27,15 +27,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
 
       authorize: async (credentials) => {        
-        let user= null
         const check = await signInSchema.safeParse(credentials)
-        if(!check.success){
-          return null
-        }
-        const {email,password}=check.data
-        const verifyUserDb= await AuthorizeUser({email, password})
-        user= verifyUserDb
-        return user
+
+        if(!check.success) return null        
+
+        return await AuthorizeUser({...check.data})        
       },
     }),
   ],

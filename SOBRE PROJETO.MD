@@ -4,7 +4,12 @@
 ```bash
 npm run dev
 ```
-NOME DO BANCO DE DADOS: bruno
+# ------- NOME DO BANCO DE DADOS -------
+- DATABASE: bruno
+- LOGIN: postgres
+- SENHA: parangarito12
+
+- POPULAR BANCO: npx prisma megrate dev
 
 ### Produção
 ```bash
