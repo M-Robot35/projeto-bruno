@@ -19,8 +19,9 @@ export const frontConstants={
     },
     integracoes_path:[
         { name:'evolution', url:'http://localhost:8080/manager' },
-        { name:'evolution documentação', url:'http://localhost:8080/manager'},
-        { name:'banco de dados', url:'http://localhost:8082' },
+        { name:'evolution postman', url:'https://www.postman.com/agenciadgcode/evolution-api/collection/1wphumy/evolution-api-v2-2-0-v2-2-1'},
+        { name:'evolution github', url:'https://github.com/EvolutionAPI/evolution-api'},
+        { name:'banco de dados', url:'http://localhost:8082'},
     ]
 
 

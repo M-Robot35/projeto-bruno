@@ -166,15 +166,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   })
 
   const dataUserLogin = useSession()
+
   useEffect(() => {
     if(dataUserLogin.status === 'authenticated'){
       setUser((prev)=>{
         return {
           ...prev,
-          name:dataUserLogin.data.user.name,   
-          email:dataUserLogin.data.user.email,
-          avatar:dataUserLogin.data.user.image,
-          role:dataUserLogin.data.user.role,
+          name:dataUserLogin.data.user?.name,   
+          email:dataUserLogin.data.user?.email,
+          avatar:dataUserLogin.data.user!.image,
+          role:dataUserLogin.data.user?.role
         }
       })
     }
