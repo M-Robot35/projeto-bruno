@@ -4,6 +4,7 @@
 ```bash
 npm run dev
 ```
+NOME DO BANCO DE DADOS: bruno
 
 ### Produção
 ```bash
