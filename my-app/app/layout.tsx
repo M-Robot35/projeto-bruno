@@ -3,8 +3,13 @@ import { ThemeProvider } from "@/components/ui/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { AuthProvider } from "@/components/ui/AuthProvider";
 import { frontConstants } from "./core/constants/front-constants";
-const {dataTitle,dataAutors,dataDescription}= frontConstants.metaData
-
+const {
+  dataTitle,
+  dataAutors,
+  dataDescription,
+  dataIcon,
+  lenguage,
+}= frontConstants.metaData
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -22,7 +27,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: dataTitle,
   description: dataDescription,
-  authors: dataAutors
+  authors: dataAutors,
+  icons: dataIcon
 };
 
 export default function RootLayout({
@@ -31,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt">
+    <html lang={lenguage}>
       <AuthProvider>
         <ThemeProvider
               attribute="class"

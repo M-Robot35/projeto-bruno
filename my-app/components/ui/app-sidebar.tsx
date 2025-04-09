@@ -157,13 +157,15 @@ const data = {
   ],
 }
 
+const initUser={
+  name: 'Sem Nome',
+  email: 'Sem Email',
+  avatar: '/avatars/shadcn.jpg',
+  role: '',
+}
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const [user, setUser] = useState({
-    name: 'Sem Nome',
-    email: 'Sem Email',
-    avatar: '/avatars/shadcn.jpg',
-    role: '',
-  })
+  const [user, setUser] = useState(initUser)
 
   const dataUserLogin = useSession()
 
@@ -172,10 +174,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       setUser((prev)=>{
         return {
           ...prev,
-          name:dataUserLogin.data.user?.name,   
-          email:dataUserLogin.data.user?.email,
-          avatar:dataUserLogin.data.user!.image,
-          role:dataUserLogin.data.user?.role
+          email: dataUserLogin.data.user?.email??'Sem Email',
+          name:dataUserLogin.data.user?.name??'Sem Nome',   
+          avatar:dataUserLogin.data.user?.image??'/avatars/shadcn.jpg',
+          role:dataUserLogin.data.user?.role??''
         }
       })
     }
@@ -191,10 +193,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {...props}
     >
       <SidebarHeader>
+
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <a href="/">
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                   <Command className="size-4" />
                 </div>
@@ -206,15 +209,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-      </SidebarHeader>      
+
+      </SidebarHeader>
+
       <SidebarContent>
         {(user.role && user.role === 'SUPER_ADMIN') &&  (
             <NavMain items={data.navMain} />
-        )}
-        
+        )}        
         <NavProjects projects={data.projects} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
+
       <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
