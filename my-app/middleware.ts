@@ -17,8 +17,20 @@ export async function middleware(request: NextRequest) {
       const isAuthPage = nextUrl.pathname.startsWith('/auth/login') || nextUrl.pathname.startsWith('/auth/register');
       const isProtectedRoute = nextUrl.pathname.startsWith('/admin');
       const isPublicRoute = nextUrl.pathname === '/' || nextUrl.pathname.startsWith('/api/auth');
-     
-  
+      
+      
+      // se estiver na pagina admin, redireciona para o dashboard
+      if(nextUrl.pathname === '/admin'){
+        if(token){
+          const loginUrl =new URL('/admin/dashboard', request.url);
+          loginUrl.searchParams.set('callbackUrl', nextUrl.pathname);
+          return NextResponse.redirect(loginUrl);
+        }
+        const loginUrl = new URL('/auth/login', request.url);
+        loginUrl.searchParams.set('callbackUrl', nextUrl.pathname);
+        return NextResponse.redirect(loginUrl);
+      }
+      
       // Permite acesso a rotas públicas
       if (isPublicRoute) {
         return NextResponse.next();

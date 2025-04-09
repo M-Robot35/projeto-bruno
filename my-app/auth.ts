@@ -1,7 +1,7 @@
 import NextAuth from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import Credentials from "next-auth/providers/credentials"
-//import {prisma} from '@/app/database/prisma'
+import {prisma} from '@/app/database/prisma'
 import AuthorizeUser from "./app/actions/authorizeUserAction"
 import z from 'zod'
 
@@ -18,7 +18,7 @@ const signInSchema = z.object({
 
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  //adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma),
   providers:[
     Credentials({
       credentials: {
