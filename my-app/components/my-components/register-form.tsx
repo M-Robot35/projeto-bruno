@@ -8,12 +8,11 @@ import { toast } from "sonner";
 import RegisterFormAction from "@/app/actions/registerFormAction";
 
 export default function RegisterForm() {  
-  const [state, formAction, pending] = useActionState(RegisterFormAction, null) 
+  const [state, formAction, pending] = useActionState(RegisterFormAction, null)
 
-  if(state?.success){
-    toast.success("Registration successful! Please faça Login.");
+  if(!pending && state?.success){
+    toast.success('Sua conta foi com Sucesso')
     signIn(undefined, { callbackUrl: "/auth/login" });
-
   } 
 
   return (
@@ -111,6 +110,7 @@ export default function RegisterForm() {
           </p>
         </form>
       </div>
+
     </div>
   );
 }

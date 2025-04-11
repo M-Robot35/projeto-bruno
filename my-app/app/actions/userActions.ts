@@ -14,6 +14,24 @@ export async function getAllUserServerAction():Promise<user[]>{
    return allUser
 }
 
-export async function setUserUpdateAction(userId:string,data:Partial<user>){
-   const setUser= await userModel.update(userId, data)   
+export async function setUserUpdateAction(userId:string,data:Partial<user>):Promise<boolean>{
+   try{
+      const setUser= await userModel.update(userId, data)
+      if(!setUser) return false
+      return true
+
+   }  catch(error){
+      return false
+   } 
+}
+
+export async function deleteUserAction(userId:string):Promise<boolean>{
+   try{
+      const setUser= await userModel.delete(userId)
+      if(!setUser) return false
+      return true
+      
+   }  catch(error){
+      return false
+   } 
 }

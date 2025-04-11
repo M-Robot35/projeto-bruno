@@ -1,7 +1,10 @@
 'use client'
 import {user} from "@/app/database/db-model/user-model"
 import { Checkbox } from "@/components/ui/checkbox"
-import { setUserUpdateAction } from "@/app/actions/userActions"
+import { setUserUpdateAction, deleteUserAction } from "@/app/actions/userActions"
+import { toast } from "sonner"
+import { getAllUserServerAction } from "@/app/actions/userActions"
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -27,6 +30,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { useState } from "react"
    
 const invoices = [
     {
@@ -92,17 +96,41 @@ type ServerUserTableProps = {
 
 
 export default function ServerUserTable({ userData }: ServerUserTableProps){
+    const [usuarios, setUsuarios]= useState<user[]>(userData)
 
     const handlerChange= async(userId:string, input:roleType)=>{
-        await setUserUpdateAction(userId,{role:input})
+        const setUserRole= await setUserUpdateAction(userId,{role:input})
+        if(!setUserRole){
+            toast.error('Error ao atualizado Usuário')
+            return
+        }
+        toast.success('Usuário atualizado com Sucesso')
+    }
+
+    const handlerDeleteUser= async(userId:string)=>{
+        const us= userData.find(user => user.email)
+        if(!confirm(`Você tem certeza que quer Deletar ${us?.email}`)){
+            return
+        }
+        const setUserRole= await deleteUserAction(userId)
+        if(!setUserRole){
+            toast.error('Error ao atualizado Usuário')
+            return
+        }
+        toast.success('Usuário atualizado com Sucesso')
+        await haldleGetAll()
+    }
+
+    const haldleGetAll= async ()=>{
+        const reload= await getAllUserServerAction()
+        setUsuarios(reload)
     }
     
+
     return <section>
         <h1 className="font-extrabold italic mb-2">Usuários</h1>
         <div className="border rounded-sm">
-            <Table>
-                {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
-                
+            <Table>                
                 <TableHeader>
                     <TableRow>
                         <TableHead className={``}>
@@ -120,7 +148,7 @@ export default function ServerUserTable({ userData }: ServerUserTableProps){
                 </TableHeader>
                 
                 <TableBody>
-                    {userData.map((usuario) => (
+                    {usuarios.map((usuario) => (
                         <TableRow key={usuario.id}>
                             <TableCell className={``}>
                                 <div className="flex items-center space-x-2">
@@ -154,7 +182,7 @@ export default function ServerUserTable({ userData }: ServerUserTableProps){
                                 <DropdownMenuContent>
                                     <DropdownMenuLabel>{usuario.email}</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem>Deletar</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={()=>{handlerDeleteUser(usuario.id)}}>Deletar</DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                             </TableCell>
