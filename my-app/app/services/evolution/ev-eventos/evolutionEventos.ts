@@ -1,7 +1,7 @@
 import EventDefault from "@/app/core/helpers/eventsDefault";
 import { ISettings,  } from "../evoluitonTypes/instances-type";
 import { InstanceCreateEvolution } from "../evoluitonTypes/instances-type";
-import { Logs } from "@/app/core/system";
+import { Logs } from "@/app/core/logs";
 import { deleteInstanceAction, setInstanceStatusConnection } from "@/app/actions/instanceAction";
 import {  WebhookConnectionUpdateDTO } from "../ev-webhook/webhook-msg-connection";
 
@@ -99,12 +99,12 @@ eventsEvolution.on('INSTANCIA_DELETE', async( event:typeDataInstance<InstanceCre
     try{
         await deleteInstanceAction(instance)
     }catch(error){
-        Logs.error('INSTANCIA_DELETE', error)
+        Logs.error('INSTANCIA_DELETE', error.message)
     }
 })
 
 eventsEvolution.on('SETTINGS_UPDATE', ( event:typeDataInstance<ISettings> )=>{    
     // pode notificar o usuario por whatsapp ou email ao surgir o evento  
-    const usuario= event[0]
+    const usuario= event
     console.log('EVENTO ACIONADO -- ', event)
 })

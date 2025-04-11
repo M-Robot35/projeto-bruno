@@ -59,11 +59,9 @@ class UserModel {
         return execute
     }
 
-    async findAll(): Promise<User[]>
+    async all(): Promise<User[]>
     {
-        const execute= await this.database.findMany({
-            
-        })
+        const execute= await this.database.findMany()
         return execute
     }
 

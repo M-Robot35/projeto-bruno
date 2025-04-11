@@ -1,7 +1,7 @@
 import AvatarImageUser from "@/components/my-components/avatar"
 import { Button } from "@/components/ui/button"
 import { ArrowRightCircle } from "lucide-react"
-
+import BackspacePage from "@/components/my-components/back-space"
 
 export const formatNumber= (numero:string)=>{
   if(!numero) return numero
@@ -32,6 +32,7 @@ export default async function Page() {
   
   return (    
     <div className="container flex flex-1 flex-col gap-4 p-4">
+      <BackspacePage/>
       <div className="flex justify-end">
         
       </div>

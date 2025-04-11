@@ -1,8 +1,8 @@
 import HttpRequests from "@/app/core/helpers/HttpRequests";
-import { Logs } from "@/app/core/system";
 import EvolutionManage from "./ev-menage";
 import { TypeGroupOutput, TypeGroupParticipants } from "./evoluitonTypes/instances-type";
 import { eventsEvolution, respondeEvento } from "./ev-eventos/evolutionEventos";
+import { Logs } from "@/app/core/logs";
 
 
 export default class EvGrupos {

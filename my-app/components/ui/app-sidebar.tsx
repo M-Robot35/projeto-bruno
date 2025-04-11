@@ -48,7 +48,7 @@ const data = {
       items: [
         {
           title: "Admin Dashboard",
-          url: "/server/dashboard",
+          url: "/admin/server/dashboard",
         },
         {
           title: "Integrações",

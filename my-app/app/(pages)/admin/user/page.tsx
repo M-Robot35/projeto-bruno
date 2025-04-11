@@ -1,7 +1,7 @@
 import UserData from "@/components/my-components/user-data"
 import { getServerAction } from "@/app/actions/getSectionAction"
 import userModel from "@/app/database/db-model/user-model"
-
+import BackspacePage from "@/components/my-components/back-space"
 
 export default async function Page() {
   const user= await getServerAction()
@@ -16,8 +16,9 @@ export default async function Page() {
     image: usuario?.image ?? '',
   }
   
-  return (    
-    <div className="container flex flex-1 flex-col gap-4">
+  return (
+    <div className="container flex flex-1 flex-col gap-4 p-4">
+      <BackspacePage />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 rounded-xl">
       <UserData userData={safeUserData}/>
       </div>

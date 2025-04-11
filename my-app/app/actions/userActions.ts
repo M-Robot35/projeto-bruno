@@ -8,3 +8,8 @@ export async function getUserAction():Promise<user>{
    const getUserId= await userModel.findById(session!.user.id)
    return getUserId as user    
 }
+
+export async function getAllUserServerAction():Promise<user[]>{
+   const allUser= await userModel.all()
+   return allUser
+}

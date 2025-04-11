@@ -1,5 +1,5 @@
 import HttpRequests from "@/app/core/helpers/HttpRequests";
-import { Logs } from "@/app/core/system";
+import { Logs } from "@/app/core/logs";
 import EvolutionManage from "./ev-menage";
 import { eventsEvolution, respondeEvento } from "./ev-eventos/evolutionEventos";
 
