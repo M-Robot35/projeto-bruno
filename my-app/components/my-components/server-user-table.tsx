@@ -1,6 +1,7 @@
 'use client'
 import {user} from "@/app/database/db-model/user-model"
 import { Checkbox } from "@/components/ui/checkbox"
+import { setUserUpdateAction } from "@/app/actions/userActions"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -81,13 +82,20 @@ const headers:string[]=[
     'action'
 ]
 
+
+const center=['role','action']
+type roleType= 'USER' | 'ADMIN' | 'SUPER_ADMIN'
+
 type ServerUserTableProps = {
     userData: user[];
 };
 
-const center=['role','action']
 
 export default function ServerUserTable({ userData }: ServerUserTableProps){
+
+    const handlerChange= async(userId:string, input:roleType)=>{
+        await setUserUpdateAction(userId,{role:input})
+    }
     
     return <section>
         <h1 className="font-extrabold italic mb-2">Usuários</h1>
@@ -127,8 +135,10 @@ export default function ServerUserTable({ userData }: ServerUserTableProps){
                             <TableCell>{usuario.telefone?? '---'}</TableCell>
                             <TableCell>{usuario.image?? '---'}</TableCell>
                             <TableCell className="text-center">
-                                <Select defaultValue={usuario.role}>
-                                    <SelectTrigger className="w-[180px]" accessKey={usuario.role}>
+                                <Select onValueChange={(e)=>{                                    
+                                    handlerChange(usuario.id, e as roleType)
+                                }} defaultValue={usuario.role}>
+                                    <SelectTrigger className="w-[180px]">
                                         <SelectValue placeholder={usuario.role} />
                                     </SelectTrigger>
                                     <SelectContent>

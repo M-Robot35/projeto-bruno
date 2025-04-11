@@ -13,3 +13,7 @@ export async function getAllUserServerAction():Promise<user[]>{
    const allUser= await userModel.all()
    return allUser
 }
+
+export async function setUserUpdateAction(userId:string,data:Partial<user>){
+   const setUser= await userModel.update(userId, data)   
+}
