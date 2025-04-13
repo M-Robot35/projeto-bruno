@@ -1,4 +1,5 @@
 'use client'
+
 import {user} from "@/app/database/db-model/user-model"
 import { Checkbox } from "@/components/ui/checkbox"
 import { setUserUpdateAction, deleteUserAction } from "@/app/actions/userActions"
@@ -13,6 +14,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+
 import {
  Select,
  SelectContent,
@@ -20,6 +22,7 @@ import {
  SelectTrigger,
  SelectValue,
 } from "@/components/ui/select"
+
 import {
     Table,
     TableBody,
@@ -30,52 +33,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { useState } from "react"
-   
-const invoices = [
-    {
-      invoice: "INV001",
-      paymentStatus: "Paid",
-      totalAmount: "$250.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      invoice: "INV002",
-      paymentStatus: "Pending",
-      totalAmount: "$150.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      invoice: "INV003",
-      paymentStatus: "Unpaid",
-      totalAmount: "$350.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      invoice: "INV004",
-      paymentStatus: "Paid",
-      totalAmount: "$450.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      invoice: "INV005",
-      paymentStatus: "Paid",
-      totalAmount: "$550.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      invoice: "INV006",
-      paymentStatus: "Pending",
-      totalAmount: "$200.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      invoice: "INV007",
-      paymentStatus: "Unpaid",
-      totalAmount: "$300.00",
-      paymentMethod: "Credit Card",
-    },
-]
+import { useState, useReducer,useEffect } from "react"
 
 const headers:string[]=[
     'name',
@@ -86,6 +44,8 @@ const headers:string[]=[
     'action'
 ]
 
+import { useSession } from "next-auth/react"
+import { Button } from "../ui/button"
 
 const center=['role','action']
 type roleType= 'USER' | 'ADMIN' | 'SUPER_ADMIN'
@@ -95,8 +55,49 @@ type ServerUserTableProps = {
 };
 
 
+// -------------------------use reduce START-------------------------
+export enum options {
+    DELETE = 'DELETE',
+    CLEAR = 'CLEAR',
+    // Adicione outras ações aqui
+}
+  
+const initialState = {
+    usuario: [],
+    status: false,
+    payload: [] as string[],
+    actionPending: null as keyof typeof options | null
+};
+  
+type ActionType = {
+    type: keyof typeof options,
+    status: boolean,
+    payload: string[]
+};
+  
+export const reducer = (state: typeof initialState, action: ActionType) => {
+    const { type, payload, status } = action;
+  
+    return {
+      ...state,
+      usuario: state.usuario,
+      actionPending: type,
+      payload,
+      status
+    };
+  };  
+// -------------------------use reduce END-------------------------
+
+
 export default function ServerUserTable({ userData }: ServerUserTableProps){
     const [usuarios, setUsuarios]= useState<user[]>(userData)
+    const [userSelect, setUserSelect]= useState<string[]>([])
+    const [state, dispatch] = useReducer(reducer, initialState);
+    const { actionPending, payload } = state;
+    const [typeSelect, setTypeSelect] = useState<keyof typeof options | null>(null);
+
+    const {data}= useSession()
+    
 
     const handlerChange= async(userId:string, input:roleType)=>{
         const setUserRole= await setUserUpdateAction(userId,{role:input})
@@ -106,7 +107,7 @@ export default function ServerUserTable({ userData }: ServerUserTableProps){
         }
         toast.success('Usuário atualizado com Sucesso')
     }
-
+    
     const handlerDeleteUser= async(userId:string)=>{
         const us= userData.find(user => user.email)
         if(!confirm(`Você tem certeza que quer Deletar ${us?.email}`)){
@@ -118,19 +119,116 @@ export default function ServerUserTable({ userData }: ServerUserTableProps){
             return
         }
         toast.success('Usuário atualizado com Sucesso')
-        await haldleGetAll()
+        await handleReload()
     }
 
-    const haldleGetAll= async ()=>{
+    const handleReload= async ()=>{
         const reload= await getAllUserServerAction()
         setUsuarios(reload)
     }
+
+    function inserUserSelect(status:boolean,user:user){
+        if(!status){
+            setUserSelect(prev => {
+                if(prev.includes(user.id)){
+                    return prev.filter(item => item != user.id)
+                }
+                return prev
+            })
+        }
+
+        if(status){
+            setUserSelect(prev => {
+                if(!prev.includes(user.id)){
+                    return [...userSelect, user.id]
+                }
+                return prev                
+            })
+        }
+    }
+
+    function inserUserSelectAll(status:boolean){
+        if(status){
+            const userId= userData.map(us => us.id)
+            setUserSelect(userId.filter(item => item != data?.user.id))
+        }
+        if(!status) setUserSelect([])
+    }
+
+    // reducer -----------------------------------------------
+    const actionsMap: Record<string, (ids: string[]) => Promise<void>> = {
+        DELETE: async (ids:string[]) => {
+            for await (const id of ids) {
+                await deleteUserAction(id);
+            }
+            await handleReload()
+            setUserSelect([])
+            toast.error('Deletados com Sucesso !!!')
+        },
+        CLEAR: async (ids:string[]) => {
+            toast.success('não foi feito nada')
+        }
+
+    };
+
+    useEffect(() => {
+        if (!state.actionPending || payload.length === 0) {
+            //toast.error('Selecione algum usuário antes de Aplicar as ações')
+            return
+        };
+      
+        (async () => {
+          try {
+            await actionsMap[actionPending as string](payload);
+            dispatch({ type: actionPending??'CLEAR', payload: [], status: true });
+          } catch (e) {
+            console.error(`Erro ao executar ação ${actionPending}`, e);
+            dispatch({ type: actionPending??'CLEAR', payload, status: false });
+          }
+        })();
+    }, [actionPending, payload]);
+
     
+    const aplicarAcao = () => {
+        if (!typeSelect) return;
+        
+        dispatch({
+            type: typeSelect,
+            payload: userSelect,
+            status: false
+        });
+    };
+    // reducer -----------------------------------------------
+
 
     return <section>
-        <h1 className="font-extrabold italic mb-2">Usuários</h1>
+        <div className="flex justify-between">
+            <h1 className="font-extrabold italic mb-2 self-end">Usuários</h1>
+            
+            {/* SELECT PARA TODOS USUARIOS */}
+            <div className="flex flex-row gap-2 mb-2">
+            <div className="flex flex-row gap-2 mb-2">
+                <div className="w-[180px]">
+                    <Select onValueChange={(e) => setTypeSelect(e as keyof typeof options)}>
+                    <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Escolha uma Opção" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="DELETE">Delete</SelectItem>
+                        <SelectItem value="CLEAR">Clear</SelectItem>
+                        {/* Adicione mais opções aqui se precisar */}
+                    </SelectContent>
+                    </Select>
+                </div>
+                <Button variant="outline" onClick={aplicarAcao}>Aplicar</Button>
+                </div>
+            </div>
+        </div>
+
         <div className="border rounded-sm">
-            <Table>                
+
+            {/* HEADER DA TABLEA */}
+            <Table >
                 <TableHeader>
                     <TableRow>
                         <TableHead className={``}>
@@ -138,6 +236,7 @@ export default function ServerUserTable({ userData }: ServerUserTableProps){
                                 <Checkbox 
                                     id="terms2" 
                                     disabled={false} 
+                                    onCheckedChange={(e)=> inserUserSelectAll(e as boolean)}
                                 />                            
                             </div>
                         </TableHead>
@@ -147,26 +246,32 @@ export default function ServerUserTable({ userData }: ServerUserTableProps){
                     </TableRow>
                 </TableHeader>
                 
-                <TableBody>
+                <TableBody >
+
+                    {/* USUARIOS CADASTRADOS */}
                     {usuarios.map((usuario) => (
-                        <TableRow key={usuario.id}>
+                        <TableRow key={usuario.id} >
                             <TableCell className={``}>
                                 <div className="flex items-center space-x-2">
                                     <Checkbox 
                                         id="terms2" 
                                         disabled={false}
+                                        checked={ userSelect.includes(usuario.id)}
+                                        onCheckedChange={(e)=>inserUserSelect(e as boolean, usuario )}
                                     />                            
                                 </div>
                             </TableCell>
                             <TableCell className="font-medium">{usuario.name?? '---'}</TableCell>
-                            <TableCell>{usuario.email?? '---'}</TableCell>
+                            <TableCell className={ userSelect.includes(usuario.id)?`text-blue-400 `:''}>{usuario.email?? '---'}</TableCell>
                             <TableCell>{usuario.telefone?? '---'}</TableCell>
                             <TableCell>{usuario.image?? '---'}</TableCell>
                             <TableCell className="text-center">
+
+                                {/* SELEÇÃO DA FUNÇÃO DOS USUARIOS */}
                                 <Select onValueChange={(e)=>{                                    
                                     handlerChange(usuario.id, e as roleType)
                                 }} defaultValue={usuario.role}>
-                                    <SelectTrigger className="w-[180px]">
+                                    <SelectTrigger className="w-full">
                                         <SelectValue placeholder={usuario.role} />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -178,9 +283,9 @@ export default function ServerUserTable({ userData }: ServerUserTableProps){
                             </TableCell>
                             <TableCell className="text-center">
                             <DropdownMenu>
-                            <DropdownMenuTrigger className="">...</DropdownMenuTrigger>
+                            <DropdownMenuTrigger className="hover:bg-gray-500 hover:text-black px-4 py-1 rounded-sm cursor-pointer">...</DropdownMenuTrigger>
                                 <DropdownMenuContent>
-                                    <DropdownMenuLabel>{usuario.email}</DropdownMenuLabel>
+                                    <DropdownMenuLabel >{usuario.email}</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem onClick={()=>{handlerDeleteUser(usuario.id)}}>Deletar</DropdownMenuItem>
                                 </DropdownMenuContent>
