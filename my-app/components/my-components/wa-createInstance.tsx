@@ -66,7 +66,7 @@ export default function WhatsaCreateInstanceUser({...Props}:requerements){
 
         Props.handleReload()
         setTimeout(()=>{Props.handleReload()}, 5000)
-        toast.error('Ah instancia foi Deletada com Sucesso !!!')
+        toast.success('Ah instancia foi Deletada com Sucesso !!!')
     }
 
     // limpar dados
@@ -94,40 +94,44 @@ export default function WhatsaCreateInstanceUser({...Props}:requerements){
                     </DialogDescription>
                     </DialogHeader>
                     <form action={wppAction} >
-                    <div className="grid gap-4 py-4">
-                        <div className="grid w-full items-center gap-2">
-                            <Label htmlFor="instancia" className="text-right">
-                            Nome da Instancia
-                            </Label>
-                            <Input
-                            id="instancia" 
-                            name="instancia"                            
-                            className="col-span-3"
-                            placeholder="Minha instancia"
-                            disabled={state.qrCode.length>1}
-                            />
+                        <div className="grid gap-4 py-4">
+                            <div className="grid w-full items-center gap-2">
+                                <Label htmlFor="instancia" className="text-right">
+                                Nome da Instancia
+                                </Label>
+                                <Input
+                                id="instancia" 
+                                name="instancia"
+                                {...(state.qrCode.length > 1)? {value:`${state.name}`}:''}
+                                className="col-span-3"
+                                placeholder="Minha instancia"
+                                disabled={state.qrCode.length > 1}
+                                />
+                            </div>
                         </div>
-                    </div>
                     
-                    <DialogFooter>                    
-                    {
-                        state.qrCode.length == 0 && (
-                            !wppPending?
-                            <Button type="submit">Criar</Button>:
-                            <Button type="reset" disabled>Criando...</Button>
-                        )
-                    }
-                    </DialogFooter>
+                        <DialogFooter>                    
+                        {
+                            state.qrCode.length == 0 && (
+                                !wppPending?
+                                <Button type="submit">Criar</Button>:
+                                <Button type="reset" disabled>Criando...</Button>
+                            )
+                        }
+                        </DialogFooter>
                     </form>
                     {
-                        (state.qrCode.length>1) && (
-                            <Button onClick={cancelarInstancia}>Cancelar</Button>
+                        (state.qrCode.length > 1) && (
+                            <div className='grid grid-cols-2 gap-2'>
+                                <Button onClick={cancelarInstancia}>Deletar</Button>
+                                <Button onClick={clear}>Fechar</Button>
+                            </div>
                         )
                     }
                     {
                         state.showCode && (
                             <div className=" self-start">
-                                <div className="">
+                                <div className="sm:w-[300px]">
                                     <p className="font-bold text-center mb-1">30s para Escaneie o QrCode</p>
                                     <img src={state.qrCode} alt="Image" className=" w-full h-full rounded-md  object-cover" />
                                 </div>

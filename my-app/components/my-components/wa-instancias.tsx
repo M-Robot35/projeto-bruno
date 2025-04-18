@@ -100,19 +100,19 @@ export default function WaInstancias({instancia}:WaInstancias){
                         </section>
                     )
                 }
-                <Table>
+                <Table className="">
                     <TableCaption>Suas instancias do Whatsapp</TableCaption>
                     <TableHeader>
                         <TableRow>
                         <TableHead className="">Instancias</TableHead>
                         <TableHead className="w-[180px]">Status</TableHead>
-                        <TableHead className="">Data</TableHead>
+                        <TableHead className="hidden sm:flex">Data</TableHead>
                         <TableHead>Triggers</TableHead>
                         <TableHead className="">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     
-                    <TableBody>
+                    <TableBody >
                         {instancias.map((instancia, index) => (
 
                             <TableRow key={instancia.id} >
@@ -125,13 +125,18 @@ export default function WaInstancias({instancia}:WaInstancias){
                                         <div className="text-gray-500 italic">{instancia.ownerJid? formatNumber(instancia.ownerJid):`(99) 99999-9999`}</div>
                                     </div>
                                 </div>
-                            </TableCell>
-
-                            <TableCell className="">
-                                {statusConnection(instancia.connectionStatus)}
+                                <div className="sm:hidden flex flex-row mt-2 gap-2">
+                                    <p className="flex flex-row gap-1 items-center" title="Contatos"><User /> <span>{instancia._count.Contact}</span></p>
+                                    <p className="flex flex-row gap-1 items-center" title="Chats"><MessageCirclePlus /> <span>{instancia._count.Chat}</span></p>
+                                    <p className="flex flex-row gap-1 items-center" title="Messagens"><BotMessageSquare /> <span>{instancia._count.Message}</span></p>
+                                </div>
                             </TableCell>
 
                             <TableCell>
+                                {statusConnection(instancia.connectionStatus)}
+                            </TableCell>
+
+                            <TableCell className="hidden sm:flex">
                                 <div className="flex flex-wrap gap-4 items-center">
                                     <p className="flex flex-row gap-1 items-center" title="Contatos"><User /> <span>{instancia._count.Contact}</span></p>
                                     <p className="flex flex-row gap-1 items-center" title="Chats"><MessageCirclePlus /> <span>{instancia._count.Chat}</span></p>
