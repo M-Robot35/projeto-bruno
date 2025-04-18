@@ -54,6 +54,8 @@ Você pode utilizar **Docker** para subir o banco de dados **PostgreSQL**, que j
 ```bash
 npm exec prisma migrate dev
 ```
+# icones Lucichart
+    https://lucide.dev/icons/bot-message-square
 
 Esse comando:
 1. Gera um arquivo de migração SQL.

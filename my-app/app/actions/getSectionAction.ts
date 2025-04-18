@@ -1,5 +1,7 @@
 import { auth } from '@/auth'
 import { Logs } from '../core/logs'
+import { redirect } from 'next/navigation'
+
 
 export type sessionType = {
     name: string|null,
@@ -7,7 +9,7 @@ export type sessionType = {
     image: string|null,
     id: string,
     role: string
-  }
+}
 
 export async function getServerAction(): Promise<sessionType | null> {
   const session = await auth()
@@ -22,4 +24,12 @@ export async function getServerAction(): Promise<sessionType | null> {
     Logs.error('getServerAction', 'Não foi possível encontrar a Sessão do usuário')
     return null
   }
+}
+
+export async function sessionUserAction(): Promise<sessionType>{
+  const session = await auth()
+  if(!session){
+    await redirect('/auth/login')
+  }
+  return session!.user
 }

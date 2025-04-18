@@ -2,11 +2,11 @@ import EventDefault from "@/app/core/helpers/eventsDefault";
 import { ISettings,  } from "../evoluitonTypes/instances-type";
 import { InstanceCreateEvolution } from "../evoluitonTypes/instances-type";
 import { Logs } from "@/app/core/logs";
-import { deleteInstanceAction, setInstanceStatusConnection } from "@/app/actions/instanceAction";
+//import { deleteInstanceAction, setInstanceStatusConnection } from "@/app/actions/instanceAction";
 import {  WebhookConnectionUpdateDTO } from "../ev-webhook/webhook-msg-connection";
 
 
-export function respondeEvento<T=any>(success:boolean ,message:string, data:T=null){
+export function respondeEvento<T=any>(success:boolean ,message:string, data:T){
     if(!success || !message){
         return {
             success:false,
@@ -76,7 +76,7 @@ eventsEvolution.on('INSTANCIA_STATUS_CONNECTION', async( event:WebhookConnection
             Logs.error('INSTANCIA_STATUS_CONNECTION', 'Dados do evento inválidos')
             return
         }
-       await setInstanceStatusConnection(event.instance, event.state)   
+       //await setInstanceStatusConnection(event.instance, event.state)   
        Logs.success('INSTANCIA_STATUS_CONNECTION', `Status atualizado: ${event.instance} - ${event.state}`)
      
     }catch(error){
@@ -96,11 +96,11 @@ eventsEvolution.on('INSTANCIA_DELETE', async( event:typeDataInstance<InstanceCre
     const deleteInstance:any= data
     const { instance }= deleteInstance
     
-    try{
-        await deleteInstanceAction(instance)
-    }catch(error){
-        Logs.error('INSTANCIA_DELETE', error.message)
-    }
+    // try{
+    //     await deleteInstanceAction(instance)
+    // }catch(error){
+    //     Logs.error('INSTANCIA_DELETE', error.message)
+    // }
 })
 
 eventsEvolution.on('SETTINGS_UPDATE', ( event:typeDataInstance<ISettings> )=>{    
