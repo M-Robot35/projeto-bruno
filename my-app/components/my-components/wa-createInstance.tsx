@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState, useEffect } from "react"
 import { useActionState } from "react"
-import { FormWhatsappCreateInstance,whatsappDelete,whatsappStatus } from "@/app/actions/whatsappActions"
+import { FormWhatsappCreateInstance,whatsappDelete,whatsappStatus, whatsappInstanceByUser } from "@/app/actions/whatsappActions"
 import { toast } from "sonner"
 
 const initStateWpp= {
@@ -76,8 +76,6 @@ export default function WhatsaCreateInstanceUser({...Props}:requerements){
                 qrCode:'', 
                 showCode:false,
                 name:'',
-                count:0,
-                isContent:false
             }
         })
     }

@@ -3,6 +3,7 @@ import WhatsappMessage from "../services/evolution/ev-evolution"
 import { sessionUserAction } from "./getSectionAction"
 import { IEvolutionInstance,InstanceCreateEvolution } from "../services/evolution/evoluitonTypes/instances-type"
 import { TypeGroupOutput } from "../services/evolution/evoluitonTypes/instances-type"
+import instanciaModel from "../database/db-model/instancia-model"
 import { Logs } from "../core/logs"
 import z from 'zod'
 
@@ -13,6 +14,21 @@ export async function whatsappAllInstance():Promise<IEvolutionInstance[]>{
     if(!instancias) return []
     return instancias   
 }
+
+// pega somente as instancias do usuario logado
+export async function whatsappInstanceByUser():Promise<IEvolutionInstance[]>{
+    const {id,email,role,name} = await sessionUserAction()
+    
+    const instancias= await WhatsappMessage.instancia.instancia_all()
+    if(!instancias) return []
+
+    // pega as instancias somente do usuario
+    const instanceUser= await (await instanciaModel.findAllUser(id)).map(instanceId => instanceId.hash)    
+
+    // filtra somente as instancias que o usuario criou
+    return instancias.filter(ins => instanceUser.includes(ins.id))  
+}
+
 
 // se pega uma instancia pelo ID
 export async function whatsappInstanceByID(instanceId:string):Promise<IEvolutionInstance|null>{

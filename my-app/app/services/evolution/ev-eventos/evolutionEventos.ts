@@ -4,6 +4,8 @@ import { InstanceCreateEvolution } from "../evoluitonTypes/instances-type";
 import { Logs } from "@/app/core/logs";
 //import { deleteInstanceAction, setInstanceStatusConnection } from "@/app/actions/instanceAction";
 import {  WebhookConnectionUpdateDTO } from "../ev-webhook/webhook-msg-connection";
+import instanciaModel from "@/app/database/db-model/instancia-model";
+import { sessionUserAction } from "@/app/actions/getSectionAction";
 
 
 export function respondeEvento<T=any>(success:boolean ,message:string, data:T){
@@ -47,14 +49,43 @@ export type TypeEventsName=
 |"MESSAGE_POLL"
 export const eventsEvolution= new EventDefault<TypeEventsName>()
 
-eventsEvolution.on('INSTANCIA_CRIAR', ( event:typeDataInstance<InstanceCreateEvolution> )=>{  
+eventsEvolution.on('INSTANCIA_CRIAR', async ( event:typeDataInstance<InstanceCreateEvolution> )=>{  
     const { success, message, data }= event
     if(!success){
         Logs.error('INSTANCIA_CRIAR', message)
         return
     }
-
+    const {id}= await sessionUserAction()
     const { hash, qrcode, settings, rabbitmq, ...rest }= data
+
+    // salva a instancia do usuario no BD
+    const save= await instanciaModel.create({
+        userId:id,
+        hash:rest.instance.instanceId,
+        instanciaName:rest.instance.instanceName,
+        numero:'',
+        baseCode:'',
+        statusConnection:rest.instance.status
+    })
+})
+
+// deleta a instancia
+eventsEvolution.on('INSTANCIA_DELETE', async( event:typeDataInstance<InstanceCreateEvolution> )=>{  
+    // deletar a instancia do banco de dados
+    const { success, message, data }= event
+    if(!success){
+        Logs.error('INSTANCIA_DELETE', message)
+        return
+    }
+    const {id}= await sessionUserAction()
+    const deleteInstance:any= data
+    const { instance }= deleteInstance
+    
+    try{
+        await instanciaModel.delete(id, instance)
+    }catch(error){
+        Logs.error('INSTANCIA_DELETE', JSON.stringify(error))
+    }
 })
 
 eventsEvolution.on('WEBHOOK_UPDATE', ( event:typeDataInstance )=>{  
@@ -84,24 +115,6 @@ eventsEvolution.on('INSTANCIA_STATUS_CONNECTION', async( event:WebhookConnection
     }   
 })
 
-
-eventsEvolution.on('INSTANCIA_DELETE', async( event:typeDataInstance<InstanceCreateEvolution> )=>{  
-    // deletar a instancia do banco de dados
-    const { success, message, data }= event
-    if(!success){
-        Logs.error('INSTANCIA_DELETE', message)
-        return
-    }
-
-    const deleteInstance:any= data
-    const { instance }= deleteInstance
-    
-    // try{
-    //     await deleteInstanceAction(instance)
-    // }catch(error){
-    //     Logs.error('INSTANCIA_DELETE', error.message)
-    // }
-})
 
 eventsEvolution.on('SETTINGS_UPDATE', ( event:typeDataInstance<ISettings> )=>{    
     // pode notificar o usuario por whatsapp ou email ao surgir o evento  

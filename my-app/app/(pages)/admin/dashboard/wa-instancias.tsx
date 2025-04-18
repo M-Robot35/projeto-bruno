@@ -1,14 +1,14 @@
 'use client'
 import { IEvolutionInstance } from "@/app/services/evolution/evoluitonTypes/instances-type"
-import AvatarImageUser from "./avatar"
+import AvatarImageUser from "@/components/my-components/avatar"
 import { useActionState, useEffect } from "react"
-import { whatsappInstanceByUser } from "@/app/actions/whatsappActions"
+import { whatsappAllInstance } from "@/app/actions/whatsappActions"
 import {
     whatsappDelete,
     whatsappLogout,
     whatsappRestart
 } from "@/app/actions/whatsappActions"
-import WhatsaCreateInstanceUser from "./wa-createInstance"
+import WhatsaCreateInstanceUser from "@/components/my-components/wa-createInstance"
 import { toast } from "sonner"
 import {
     User, 
@@ -20,7 +20,7 @@ import {
     CircleStop,
     RefreshCcw
 } from "lucide-react"
-import { Button } from "../ui/button"
+import { Button } from "@/components/ui/button"
 
 import {
     Table,
@@ -69,7 +69,7 @@ export default function WaInstancias({instancia}:WaInstancias){
     const [instanceRestart, actionRestart, pendingRestart]= useActionState(whatsappRestart, null)
     
     const handleReload= async ()=>{
-        setInstancias(await whatsappInstanceByUser())
+        setInstancias(await whatsappAllInstance())
     }
     
     useEffect(()=>{        
