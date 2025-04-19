@@ -3,8 +3,7 @@
 import * as React from "react";
 import { format } from "date-fns";
 import { CalendarIcon, Clock, CheckCircle, Repeat } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button } from "../ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
@@ -59,29 +58,29 @@ export default function Scheduler() {
     generateCron(time, value);
   }
 
-  async function saveSchedule() {
-    const data = {
-      eventName,
-      dateTime: `${format(date!, "dd/MM/yyyy")} ${time}`,
-      repeat,
-      cron: cronExpression,
-    };
+  // async function saveSchedule() {
+  //   const data = {
+  //     eventName,
+  //     dateTime: `${format(date!, "dd/MM/yyyy")} ${time}`,
+  //     repeat,
+  //     cron: cronExpression,
+  //   };
 
-    try {
-      const response = await fetch("/api/schedule", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+  //   try {
+  //     const response = await fetch("/api/schedule", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(data),
+  //     });
 
-      if (response.ok) {
-        setIsSaved(true);
-        setTimeout(() => setIsSaved(false), 3000);
-      }
-    } catch (error) {
-      console.error("Erro ao salvar:", error);
-    }
-  }
+  //     if (response.ok) {
+  //       setIsSaved(true);
+  //       setTimeout(() => setIsSaved(false), 3000);
+  //     }
+  //   } catch (error) {
+  //     console.error("Erro ao salvar:", error);
+  //   }
+  // }
 
   return (
     <section className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
@@ -163,9 +162,9 @@ export default function Scheduler() {
       </div>
 
       {/* Botão de Agendamento */}
-      <Button onClick={saveSchedule} className="w-full bg-blue-500 hover:bg-blue-600">
+      {/* <Button onClick={saveSchedule} className="w-full bg-blue-500 hover:bg-blue-600">
         Agendar Tarefa
-      </Button>
+      </Button> */}
 
       {/* Feedback Visual */}
       {isSaved && (

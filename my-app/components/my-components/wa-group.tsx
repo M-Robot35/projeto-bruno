@@ -1,12 +1,11 @@
 'use client'
 import { useState, useEffect } from "react"
-import WhatsappMessage from "@/app/services/evolution/ev-evolution"
 import Loading from "./loading"
 import TableGroup from "./wa-table-group"
 import { Logs } from "@/app/core/logs"
 import { TypeGroupOutput } from "@/app/services/evolution/evoluitonTypes/instances-type"
 import { toast } from "sonner"
-
+import { gruposGetAction } from "@/app/actions/instanceComponentsActions"
 
 export interface parametrosInstancia {
     apikey:string
@@ -17,11 +16,11 @@ export interface parametrosInstancia {
 export default function InstanceGroup({apikey, instanceName}: parametrosInstancia){   
     const [grupo, setGrupo]= useState<TypeGroupOutput[]>([])
     const [loading, setLoading]= useState(false)
-    
+
     const grupos= async ()=>{
         setLoading(true)
         try{
-            const execute= await WhatsappMessage.grupos.groupsAll(instanceName, apikey)
+            const execute= await gruposGetAction(null,{apikey, instanceName})
             
             if(!execute){
                 Logs.error('InstanceGroup', `Error ao  encontrar Grupos `)

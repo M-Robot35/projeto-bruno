@@ -1,5 +1,5 @@
 'use client'
-import WhatsappMessage from "@/app/services/evolution/ev-evolution"
+import { proxyGetAction,proxyUpdateAction } from "@/app/actions/instanceComponentsActions"
 import { useEffect, useState } from "react"
 
 import { Label } from "@/components/ui/label"
@@ -7,12 +7,10 @@ import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import { Switch } from "../ui/switch"
 
-
 export interface IIinstaceParams {
     instanceName:string
     apiKey:string
 }
-
 
 export default function InstanceProxy({ apiKey, instanceName }: IIinstaceParams) {
     // const [proxy, setProxy] = useState<IProxySetOptions | null>(null);
@@ -28,9 +26,9 @@ export default function InstanceProxy({ apiKey, instanceName }: IIinstaceParams)
       const proxy = async () => {
         if(!apiKey && !instanceName) return
 
-        const execute = await WhatsappMessage.proxyGet(apiKey, instanceName);
+        const execute = await proxyGetAction(null,{apikey:apiKey,instanceName});
         if (execute) {
-          // setProxy(execute);
+          setActive(execute);
         }
       };
       
@@ -38,14 +36,14 @@ export default function InstanceProxy({ apiKey, instanceName }: IIinstaceParams)
     }, []);
 
     const proxyUpdate= async ()=>{
-      const execute= await WhatsappMessage.proxyUpdate(apiKey, instanceName,{
+      const execute= await proxyUpdateAction(null,{apikey:apiKey,instanceName,options:{
         enabled: active,
         host,
         port: porta,
         username: usuario,
         password: senha,
         protocol: protocolo
-      })
+      }})
 
       await execute
     }

@@ -40,7 +40,8 @@ export default class EvGrupos {
             
             const response= await execute      
             eventsEvolution.emit('GROUPS_BUSCAR_PARTICIPANTS', respondeEvento(true, 'Grupos encontrados com sucesso', { instanceName, apikey, grupoId, ...response}) )
-            return response       }catch(error){
+            return response       
+        }catch(error){
             eventsEvolution.emit('GROUPS_BUSCAR_PARTICIPANTS', respondeEvento(false, 'Erro ao buscar os grupos', error) )
             return null
         }

@@ -1,14 +1,12 @@
 'use client'
-import WhatsappMessage from "@/app/services/evolution/ev-evolution"
 import { useEffect, useState } from "react"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
-import { ISettings } from "@/app/services/evolution/evoluitonTypes/instances-type"
 import { toast } from "sonner"
-
-
+import { settingsGetAction,settingsUpdateAction } from "@/app/actions/instanceComponentsActions"
+import { ISettings } from "@/app/services/evolution/evoluitonTypes/instances-type"
 
 export interface IIinstaceParams {
     instanceName:string
@@ -28,9 +26,9 @@ const translate = (palavra: string) => {
 };
 
 const set= {
-  alwaysOnline: false,
   groupsIgnore: false,
   msgCall: "",
+  alwaysOnline: false,
   readMessages: false,
   readStatus: false,
   rejectCall: false,
@@ -38,27 +36,26 @@ const set= {
 };
 
 export default function InstanceSettings({ apiKey, instanceName }: IIinstaceParams) {
-    const [settings, setSettings] = useState<ISettings>(set);
+  const [settings, setSettings] = useState<ISettings>(set);
 
     const setting = async () => {
-      const execute = await WhatsappMessage.settingsGet(apiKey, instanceName);        
-      if(!execute) return
-      setSettings({...execute})
+      const execute = await settingsGetAction(null,{apikey:apiKey,instanceName});  
+      if(!execute) return      
+      setSettings(execute)
     };
 
     useEffect(() => { setting() }, []);
 
     const settingsUpdate= async ()=>{
-      const execute = await WhatsappMessage.settingsUpdate(apiKey, instanceName, {...settings});
+      const execute= await settingsUpdateAction(null,{apikey:apiKey, instanceName, options:{...settings} })
       if(!execute){
         return
       }
       setting()
       toast('[SUCCESS] Settings',{
-        description:'Settings atualizada com sucesso'
+      description:'Settings atualizada com sucesso'
     })      
-    }  
-    
+    }
   
     return (
       <div className="flex flex-col gap-2">
@@ -68,25 +65,25 @@ export default function InstanceSettings({ apiKey, instanceName }: IIinstacePara
               <Label htmlFor={key}>{translate(key)}</Label>
               
               {typeof value === "boolean" ? (
-                <Switch
+              <Switch
+                id={key}
+                checked={ value }
+                onCheckedChange={()=>{setSettings({...settings, [key]:!value} )}}
+                className={''}
+              />
+            ) : (
+              <Input 
+                  className={`w-[70%]`}
                   id={key}
-                  checked={ value }
-                  onCheckedChange={()=>{setSettings({...settings, [key]:!value} )}}
-                  className={''}
-                />
-              ) : (
-                <Input 
-                    className={` w-[70%]`}
-                    id={key}
-                    value={value}
-                    onChange={(e)=>{ setSettings({...settings, [key]:e.target.value}) }}
-                    type="text" 
-                    placeholder="Mensagem"
-                />
-              )}
+                  value={typeof value === 'string' ? value : ''}
+                  onChange={(e)=>{ setSettings({...settings, [key]:e.target.value}) }}
+                  type="text" 
+                  placeholder="Mensagem"
+              />
+            )}
             </div>
           ))}
-          <div className="">
+          <div className="text-right">
             <Button className="" onClick={settingsUpdate} variant={'outline'}>Salvar</Button>
           </div>
       </div>

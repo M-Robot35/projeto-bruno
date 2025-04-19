@@ -1,16 +1,16 @@
 
-import InstanciasTabs from "@/components/my-components/wa-instancia-tabs"
-import DeleteInstancia from "@/components/my-components/wa-instancia-delete"
-import LogoutInstance from "@/components/my-components/wa-instancia-logout"
-import InstanciaConnect from "@/components/my-components/wa-instancia-connect"
-// import { getInstanceNameAction, getInstaceDatabase } from "@/app/actions/instanceAction"
+import InstanciasTabs from "@/components/my-components/wa-instancia-tabs";
+import BackspacePage from "@/components/my-components/back-space";
+import AvatarImageUser from "@/components/my-components/avatar";
+import { redirect } from "next/navigation";
+import {
+  User, 
+  MessageCirclePlus,
+  BotMessageSquare,  
+} from "lucide-react"
 
-import { formatNumber,statusConnection } from "@/components/my-components/wa-instancias";
-import { Logs } from "@/app/core/logs";
-import { redirect } from "next/navigation"
-import Loading from "@/components/my-components/loading";
-
-import { whatsappInstanceByID } from "@/app/actions/whatsappActions";
+import { whatsappInstanceByID, whatsappMeusGrupos } from "@/app/actions/whatsappActions";
+import { templateTelefone } from "@/app/core/helpers/utils"
 
 interface instaceOptions {
   params: {
@@ -28,119 +28,45 @@ export default async function InstanceOptions({ params }: instaceOptions) {
   const getInstance= await whatsappInstanceByID(instanceId)
   if(!getInstance) return redirect('/admin/instancias')
 
-  const {name,token}= getInstance
-  
-
+  const {name,token,...props}= getInstance
+  const gp= await whatsappMeusGrupos(name, token)
 
   return (
-    <section className="container bg-muted/50 p-4 rounded-sm">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      
-        {/* Data Instância */}
-        {/* <div className="rounded-sm border p-4 relative">
-          <div className="flex justify-between items-center">
-            <div className="font-bold">Instância:</div>
-            <span className="text-gray-500">{}</span>
-          </div>
-
-          <div className="flex justify-between items-center">
-            <div className="font-bold">Número:</div>
-            <span className="text-sm text-gray-500 whitespace-nowrap">{formatNumber('')}</span>
-          </div>
-
-          <div className="flex justify-between items-center">
-            <div className="font-bold">Status:</div>
-            <span className="text-sm text-gray-500">{statusConnection('')}</span>
-          </div>
-
+    <section className="container grid grid-cols-1 gap-4 p-2 rounded-sm ">
+      <BackspacePage/>
+      {/* Dashboard */}
+      <section className="grid grid-cols-2  sm:grid-cols-4 gap-4 relative">
+        <div className="aspect-3/1 object-cover border bg-muted/50 rounded-sm">
           
-        </div> */}
-
-        {/* Data Conteudo instancia */}
-        {/* <div className="rounded-sm border p-4 "> */}
-          {/* <div className="flex justify-between items-center">
-            <div className="font-bold">Contatos:</div>
-            <span className="text-sm text-gray-500">{}</span>
+          <div className="flex gap-2 items-center p-2 rounded-sm ">
+            <AvatarImageUser urlImage={props.profilePicUrl} />            
+            <div className="flex gap-2">
+              <h1 className="font-extrabold capitalize">{name}</h1>
+              {props.profileName? <p className="text-gray-500">{` - ${props.profileName}`}</p>: ''}              
+            </div>            
           </div>
-
-          <div className="flex justify-between items-center">
-            <div className="font-bold">Grupos:</div>
-            <span className="text-sm text-gray-500">{}</span>
-          </div>
-
-          <div className="flex justify-between items-center">
-            <div className="font-bold">Mensagens:</div>
-            <span className="text-sm text-gray-500">{}</span>
-          </div>
-        </div> */}
-
-        {/* {instanciaATUAL.connectionStatus == 'connecting' ? (
-          <div className="flex justify-center">
-            <DeleteInstancia name={instanciaATUAL.name} />
-          </div>
-        ) : (
-          <div className="flex flex-row flex-wrap gap-2 rounded-sm border p-4">
-            <InstanciaConnect instanceName={instanciaATUAL.name} />
-            <LogoutInstance name={} />
-            <DeleteInstancia name={instanciaATUAL.name} />
-          </div>
-        )} */}
-      </div>
-
-      {/* TABS */}
-      {/* {instanciaATUAL.connectionStatus != 'connecting' ? (
-        <InstanciasTabs instanceName={params.name} apiKey={params.apikey} />
-      ) : (
-        <div className="flex justify-center mt-4">
-          <div className="w-[250px]">
-            <h3 className="mb-2">Escaneie o QrCode</h3>
-            {loadBase64Instance  && (
-              <img src={loadBase64Instance} alt="qrCode" />
-            )}
-          </div>
+          <p className="mt-2 text-gray-500 text-center">{templateTelefone(props.ownerJid)}</p>
         </div>
-      )} */}
+
+        <div className="aspect-3/1 object-cover border  p-2 bg-muted/50 rounded-sm">
+          <div className="flex flex-row gap-2 font-bold"><User/> <span>Contatos</span></div>
+          <h1 className="text-center font-extrabold text-2xl mt-2">{props._count.Contact}</h1>
+        </div>
+        
+        <div className="aspect-3/1 object-cover border p-2 rounded-sm  bg-muted/50">
+        <div className="flex flex-row gap-2 font-bold"><MessageCirclePlus/> <span>Contatos</span></div>
+          <h1 className="text-center font-extrabold text-2xl mt-2">{props._count.Chat}</h1>
+        </div>
+
+        <div className="aspect-3/1 object-cover border p-2 rounded-sm bg-muted/50">
+        <div className="flex flex-row gap-2 font-bold"><BotMessageSquare/> <span>Contatos</span></div>
+          <h1 className="text-center font-extrabold text-2xl mt-2">{props._count.Message}</h1>
+        </div>
+      </section>
+
+      <section className="grid grid-cols-1 gap-4 bg-muted/50 p-2 rounded-sm">
+        <InstanciasTabs apiKey={token} instanceName={name}/>
+      </section>
     </section>
   );
 }
-
-export function statusUser(){
-  return (
-    <section>
-        <div className="stats">
-          <div className="stat">
-            <div className="stat-figure text-base-content size-8">
-              <span className="icon-[tabler--world] size-8"></span>
-            </div>
-            <div className="stat-title">Website Traffic</div>
-            <div className="stat-value">32K</div>
-            <div className="stat-desc">5% ↗︎ than last week</div>
-          </div>
-
-          <div className="stat">
-            <div className="stat-figure text-base-content size-8">
-              <span className="icon-[tabler--users-group] size-8"></span>
-            </div>
-            <div className="stat-title">New Signups</div>
-            <div className="stat-value">1.2K</div>
-            <div className="stat-desc">12% increase this month</div>
-          </div>
-
-          <div className="stat">
-            <div className="stat-figure size-12">
-              <div className="avatar">
-                <div className="size-12 rounded-full">
-                  <img src="https://cdn.flyonui.com/fy-assets/avatar/avatar-2.png" alt="User Avatar"/>
-                </div>
-              </div>
-            </div>
-            <div className="stat-value text-success">95%</div>
-            <div className="stat-title">Customer Retention</div>
-            <div className="stat-desc">Steady over last quarter</div>
-          </div>
-        </div>
-    </section>
-  )
-}
-
-

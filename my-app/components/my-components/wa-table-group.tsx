@@ -16,7 +16,9 @@ import SendMessage from "./wa-send-message"
 import { TypeGroupParticipants } from "@/app/services/evolution/evoluitonTypes/instances-type"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
-// import { fetchParticipantsGenerator } from "@/app/actions/group-process-action"
+import { fetchParticipantsGenerator } from "@/app/actions/instanceComponentsActions"
+
+
 import { toast } from "sonner"
 
 
@@ -110,17 +112,17 @@ export default function TableGroup({apikeyy, instanceNamee, grupos }:{apikeyy:st
         
         const fetchData = async () => {
             setCarregando(true);
-            //const generator = await fetchParticipantsGenerator(usersSend, instanceNamee, apikeyy);
+            const generator = await fetchParticipantsGenerator(usersSend, instanceNamee, apikeyy);
 
-            // for await (const participants of generator) {
-            //     if (isMounted) {
-            //         setAllParticipants(participants);
-            //     }
-            // }
-            // setCarregando(false);
+             for await (const participants of generator) {
+                 if (isMounted) {
+                    setAllParticipants(participants);
+                 }
+             }
+             setCarregando(false);
         };
 
-        fetchData();
+        //fetchData();
 
         return () => {
             isMounted = false;

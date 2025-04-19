@@ -1,7 +1,6 @@
 'use client'
 
 import { parametrosInstancia } from "./wa-group"
-import WhatsappMessage from "@/app/services/evolution/ev-evolution"
 import { useState, useEffect } from "react"
 import { Button } from "../ui/button"
 import { Label } from "../ui/label"
@@ -10,7 +9,7 @@ import { Input } from "../ui/input"
 import { Logs } from "@/app/core/logs"
 import { toast } from "sonner"
 import { evolutionEvents } from "@/app/services/evolution/evoluitonTypes/instances-type"
-
+import { webhookGetAction, webhookUpdateAction } from "@/app/actions/instanceComponentsActions"
 
 
 export default function InstanceWebhook(data: parametrosInstancia){
@@ -25,7 +24,7 @@ export default function InstanceWebhook(data: parametrosInstancia){
 
 
     const webhookget= async ()=>{
-        const execute= await WhatsappMessage.webhookGet(apikey, instanceName)
+        const execute= await webhookGetAction(null, {apikey, instanceName})
         if(!execute){
             Logs.error('InstanceWebhook', 'não tem instancias')
             return
@@ -66,13 +65,13 @@ export default function InstanceWebhook(data: parametrosInstancia){
             return
         }
 
-        const execute= await WhatsappMessage.webhookUpdate(apikey, instanceName, {
+        const execute= await webhookUpdateAction(null, {apikey, instanceName, options:{
             base64: base64,
             byEvents: byEvents,
             url: urll,
             enabled: webhookActive,
             events: eventss
-        })
+        }})
 
         if(!execute){
             toast('[ ERROR ] Webhook',{

@@ -68,9 +68,10 @@ export async function FormWhatsappCreateInstance(_:any,formdata:FormData): Promi
 }
 
 // pegar todos os grupos
-export async function whatsappMeusGrupos(instanceName: string, apikey: string):Promise<TypeGroupOutput[]|null>{
+export async function whatsappMeusGrupos(instanceName: string, apikey: string):Promise<TypeGroupOutput[]>{
     const {id,email,role,name} = await sessionUserAction()
     const execute= await WhatsappMessage.grupos.groupsAll(instanceName, apikey)
+    if(!execute) return []
     return execute
 }
 
@@ -116,7 +117,7 @@ export async function whatsappStatus(instancia:string):Promise<erroType|successT
 }
 
 
-type restartType={
+export type restartType={
     pairingCode: 'string' | undefined| null
     code: string,
     base64:string,

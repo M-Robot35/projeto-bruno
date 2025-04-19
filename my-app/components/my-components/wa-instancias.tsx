@@ -21,7 +21,7 @@ import {
     RefreshCcw
 } from "lucide-react"
 import { Button } from "../ui/button"
-
+import { restartType } from "@/app/actions/whatsappActions"
 import {
     Table,
     TableBody,
@@ -67,6 +67,7 @@ export default function WaInstancias({instancia}:WaInstancias){
     const [instanceDelete, actionDelete, pendingDelete]= useActionState(whatsappDelete, null)
     const [instanceLogout, actionLogout, pendingLogout]= useActionState(whatsappLogout, null)
     const [instanceRestart, actionRestart, pendingRestart]= useActionState(whatsappRestart, null)
+    const [qrCode, setQrCode]=useState<restartType|null>(null)
     
     const handleReload= async ()=>{
         setInstancias(await whatsappInstanceByUser())
@@ -75,6 +76,14 @@ export default function WaInstancias({instancia}:WaInstancias){
     useEffect(()=>{        
         handleReload()
         setTimeout(()=>{handleReload()}, 5000)
+
+        if(instanceRestart?.base64){            
+            setQrCode(instanceRestart)
+        }
+
+        if(instanceLogout || instanceDelete){
+            setQrCode(null)
+        }
     },[
         instanceDelete,
         instanceLogout,
@@ -89,17 +98,22 @@ export default function WaInstancias({instancia}:WaInstancias){
                     <Button onClick={handleReload} className="cursor-pointer hover:text-violet-500"  variant={'outline'}><RefreshCcw /></Button>
                     <WhatsaCreateInstanceUser handleReload={handleReload}/>
                 </div>
+                
+                {/* --- ler QrCode ---- */}
                 {
-                    (instanceRestart && instanceRestart['base64']) && (
+                    (qrCode && qrCode['base64']) && (
                         <section className="mt-6 backdrop-blur-3xl flex justify-center absolute w-full z-10 flex-col items-center">
-                            <h1>Você tem 30 segundos para escanear o QrCode</h1>
+                            <h1 className="font-extrabold p-2">Você tem 30 segundos para escanear o QrCode</h1>
                             <div className="relative bg-green-500 w-[250px] h-[250px] rounded-sm p-4">
-                                <img className="w-full h-full" src={instanceRestart['base64']} alt="" />
+                                <img className="w-full h-full" src={qrCode['base64']} alt="" />
                             </div>
-                            <Button>Deletar instancia</Button>
+                            <div className="flex flex-row gap-2 mt-2">
+                                <Button onClick={()=>{setQrCode(null)}} variant={'outline'} className="text-right">Fechar</Button>
+                            </div>
                         </section>
                     )
                 }
+                
                 <Table className="">
                     <TableCaption>Suas instancias do Whatsapp</TableCaption>
                     <TableHeader>
@@ -115,8 +129,7 @@ export default function WaInstancias({instancia}:WaInstancias){
                     <TableBody >
                         {instancias.map((instancia, index) => (
 
-                            <TableRow key={instancia.id} >
-                                
+                            <TableRow key={instancia.id} >                                
                             <TableCell className="font-medium">
                                 <div className="flex flex-row flex-nowrap gap-2">
                                     <AvatarImageUser urlImage={instancia.profilePicUrl}/>

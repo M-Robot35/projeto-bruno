@@ -15,10 +15,10 @@ export interface IIinstaceParams {
 export default function InstanciasTabs({apiKey, instanceName}:IIinstaceParams) {  
   const [activeTab, setActiveTab] = useState("profile");
   // const tabName:string[]=["profile", "grupos", "contacts", "proxy",  "webhook", "settings"]  
-
-  const conteudos:Record<string, JSX.Element>= {
+  console.log(apiKey,instanceName)
+   const conteudos:Record<string, JSX.Element>= {
       profile: <InstanceProfile  instanceName={instanceName}  apikey={apiKey}/>,
-      //schundler: <InstanceSchundlerWhatsapp  instanceName={instanceName}  apikey={apiKey}/>,
+      schundler: <InstanceSchundlerWhatsapp />,
       grupos: <InstanceGroup  instanceName={instanceName}  apikey={apiKey}/>,
       proxy: <InstanceProxy apiKey={apiKey} instanceName={instanceName}/>,
       webhook: <InstanceWebhook apikey={apiKey} instanceName={instanceName}  />,
