@@ -1,15 +1,3 @@
-<<<<<<< Updated upstream
-import LandingPage from "@/components/my-components/landigPage"
-
-export default function Page()
-{
-    return (
-      <div> 
-        <LandingPage/>
-        
-      </div>  
-      )
-=======
 'use client'
 
 import { Button } from "@/components/ui/button";
@@ -54,5 +42,4 @@ useEffect(() => {
       </div>
     </section>
   );
->>>>>>> Stashed changes
 }
