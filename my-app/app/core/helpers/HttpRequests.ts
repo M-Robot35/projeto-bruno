@@ -30,18 +30,22 @@ class AxiosHttpClient implements IHttpClient {
             }
         }
 
-        const response = await axios(axiosConfig);
-        if(response.status == 401){
-            Logs.error('AxiosHttpClient','AxiosHttpClient - ERRO de USUÁRIO NÃO AUTORIZADO ')
-            return null
-        }
-        
-        if(!response.status.toString().startsWith('2')){
-            Logs.error('AxiosHttpClient', `Error ao fazer a requisição ${response.status} -- ${JSON.stringify(response.data)}`)
-        }
+        try{
+            const response = await axios(axiosConfig);
+            if(response.status == 401){
+                Logs.error('AxiosHttpClient','AxiosHttpClient - ERRO de USUÁRIO NÃO AUTORIZADO ')
+                return null
+            }
+            
+            if(!response.status.toString().startsWith('2')){
+                Logs.error('AxiosHttpClient', `Error ao fazer a requisição ${response.status} -- ${JSON.stringify(response.data)}`)
+            }
 
-        Logs.success('AxiosHttpClient','AxiosHttpClient - HTTP REQUESST SUCCESS ')
-        return response.data;        
+            Logs.success('AxiosHttpClient','AxiosHttpClient - HTTP REQUESST SUCCESS ')
+            return response.data;  
+        }catch(error){
+            Logs.error('AxiosHttpClient --- ',JSON.stringify(error))
+        }
     }
 }
 

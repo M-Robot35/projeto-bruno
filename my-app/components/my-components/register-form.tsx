@@ -8,12 +8,11 @@ import { toast } from "sonner";
 import RegisterFormAction from "@/app/actions/registerFormAction";
 
 export default function RegisterForm() {  
-  const [state, formAction, pending] = useActionState(RegisterFormAction, null) 
+  const [state, formAction, pending] = useActionState(RegisterFormAction, null)
 
   if(state?.success){
-    toast.success("Registration successful! Please faça Login.");
+    new Promise(resolve => setTimeout(resolve,8000))
     signIn(undefined, { callbackUrl: "/auth/login" });
-
   } 
 
   return (
@@ -110,7 +109,18 @@ export default function RegisterForm() {
             </Link>
           </p>
         </form>
+          {state?.success && (
+            <div className="flex justify-center mt-2 bg-green-400 text-white p-2 rounded-sm font-bold">
+              <p>{state.success}</p>
+            </div>
+          )}
+          {state?.warning && (
+            <div className="flex justify-center mt-2 bg-red-400 text-white p-2 rounded-sm font-bold">
+              <p>{state.warning}</p>
+            </div>
+          )}
       </div>
+
     </div>
   );
 }

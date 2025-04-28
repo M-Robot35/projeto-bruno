@@ -29,6 +29,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { getUserAction } from "@/app/actions/userActions"
+
 
 const data = {
   user: {
@@ -46,7 +48,7 @@ const data = {
       items: [
         {
           title: "Admin Dashboard",
-          url: "/server/dashboard",
+          url: "/admin/server/dashboard",
         },
         {
           title: "Integrações",
@@ -168,19 +170,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [user, setUser] = useState(initUser)
 
   const dataUserLogin = useSession()
-
+  
   useEffect(() => {
-    if(dataUserLogin.status === 'authenticated'){
-      setUser((prev)=>{
-        return {
-          ...prev,
-          email: dataUserLogin.data.user?.email??'Sem Email',
-          name:dataUserLogin.data.user?.name??'Sem Nome',   
-          avatar:dataUserLogin.data.user?.image??'/avatars/shadcn.jpg',
-          role:dataUserLogin.data.user?.role??''
-        }
-      })
+    const up= async ()=>{
+      const getUser= await getUserAction()
+      if(dataUserLogin.status === 'authenticated'){
+        setUser((prev)=>{
+          return {
+            ...prev,
+            email: getUser?.email,
+            name:getUser?.name??'Sem Nome',   
+            avatar:getUser?.image??'/avatars/shadcn.jpg',
+            role:getUser?.role
+          }
+        })
+      }
     }
+    up()
   }, [dataUserLogin.update])  
 
   data.user.name = user.name

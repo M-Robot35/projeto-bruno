@@ -1,8 +1,8 @@
 import HttpRequests from "@/app/core/helpers/HttpRequests";
-import { Logs } from "@/app/core/system";
 import EvolutionManage from "./ev-menage";
 import { TypeGroupOutput, TypeGroupParticipants } from "./evoluitonTypes/instances-type";
 import { eventsEvolution, respondeEvento } from "./ev-eventos/evolutionEventos";
+import { Logs } from "@/app/core/logs";
 
 
 export default class EvGrupos {
@@ -40,7 +40,8 @@ export default class EvGrupos {
             
             const response= await execute      
             eventsEvolution.emit('GROUPS_BUSCAR_PARTICIPANTS', respondeEvento(true, 'Grupos encontrados com sucesso', { instanceName, apikey, grupoId, ...response}) )
-            return response       }catch(error){
+            return response       
+        }catch(error){
             eventsEvolution.emit('GROUPS_BUSCAR_PARTICIPANTS', respondeEvento(false, 'Erro ao buscar os grupos', error) )
             return null
         }

@@ -17,7 +17,7 @@ const signInSchema = z.object({
       .min(1, "Por favor, confirme sua senha.")
       .min(8, "A confirmação deve conter no mínimo 8 caracteres.")
       .max(32, "A confirmação deve conter no máximo 32 caracteres."),
-  });
+});
   
 
 
@@ -43,11 +43,9 @@ export default async function RegisterFormAction(_:any,formdata:FormData){
     }
     const verifyUserExistis= await userModel.findByEmail(email)
 
-    if(verifyUserExistis){
-        if(password != confirmPassword){
-            return {
-                warning:'Login ou password inválidos'
-            }
+    if(verifyUserExistis){        
+        return {
+            warning:'Login ou password inválidos'
         }
     }
     const passHash= await bcriptHash.passHash(password)

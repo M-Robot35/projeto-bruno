@@ -16,7 +16,7 @@ export default async function DashboardLayout({ children, }: { children: React.R
         <div className="flex flex-1">
           <AppSidebar />
           <SidebarInset>
-            <div className="flex flex-1 flex-col gap-4 p-4 items-center ">
+            <div className="flex flex-1 flex-col gap-4 p-1 items-center ">
             {children}
             </div> 
           </SidebarInset>

@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
         secret: process.env.NEXTAUTH_SECRET
       });
       
-      //console.log('Middleware - Token:', token);
+      // console.log('Middleware - Token:', token);
       const isAuthPage = nextUrl.pathname.startsWith('/auth/login') || nextUrl.pathname.startsWith('/auth/register');
       const isProtectedRoute = nextUrl.pathname.startsWith('/admin');
       const isPublicRoute = nextUrl.pathname === '/' || nextUrl.pathname.startsWith('/api/auth');

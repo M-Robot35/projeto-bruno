@@ -1,5 +1,5 @@
 import HttpRequests from "@/app/core/helpers/HttpRequests";
-import { Logs } from "@/app/core/system";
+import { Logs } from "@/app/core/logs";
 import { 
     IEvolutionInstance, 
     InstanciaRestartType,
@@ -57,7 +57,7 @@ export default class EvInstancia {
         }
     }
 
-    async instancia_all(): Promise<IEvolutionInstance[]>{        
+    async instancia_all(): Promise<IEvolutionInstance[]|null>{        
         const url=`${this.data.urlCompleta}/instance/fetchInstances`
 
         try{
@@ -161,7 +161,7 @@ export default class EvInstancia {
         try{
             const url=`${this.data.urlCompleta}/instance/logout/${instance}`
 
-        const execute= await HttpRequests.request({
+            const execute= await HttpRequests.request({
             method: 'DELETE',
             url,
             headers: {
@@ -181,13 +181,12 @@ export default class EvInstancia {
     async instancia_reestart(instance:string):Promise<InstanciaRestartType | null>{
         if(!instance){
             Logs.error('instancia_reestart', 'Não foi passado o parametro  instance')
-            eventsEvolution.emit('INSTANCIA_RESTART', respondeEvento<InstanciaRestartType>(false, 'Não foi passado o parametro  instance', null) )
+            //eventsEvolution.emit('INSTANCIA_RESTART', respondeEvento<InstanciaRestartType>(false, 'Não foi passado o parametro  instance') )
             return null
         }
        try{
-        const url=`${this.data.urlCompleta}/instance/restart/${instance}`
-
-        const execute= await HttpRequests.request({
+            const url=`${this.data.urlCompleta}/instance/restart/${instance}`
+            const execute= await HttpRequests.request({
             method: 'POST',
             url,
             headers: {
