@@ -1,14 +1,44 @@
 'use server'
 
+import { Interface } from "readline";
+import { whatsappInstanceByUser } from "./whatsappActions";
+
 type EstadoPayload = {
   textoUsuario: string;
   textoBot: string;
 };
 let textoUsr = "";
+
+
+const prompts =[
+  {
+    id:"",
+    nome:"",
+    prompt:"",
+    dataCriacao:"",
+    status:true
+  },
+  {
+    id:"",
+    nome:"",
+    prompt:"",
+    dataCriacao:"",
+    status:false
+  },
+  {
+    id:"",
+    nome:"",
+    prompt:"",
+    dataCriacao:"",
+    status:true
+  },
+];
+
 export async function estados(prevState: any, formData: FormData) {
   // Pegando o que o usuário digitou no formulário
   const textoUsuario = formData.get("textAreaInput")?.toString() || "";
   const textoBot = await buscaDadosPromptDoBOt();
+
   if (textoUsuario !== textoBot) {
     textoUsr = textoUsuario;
 
@@ -28,6 +58,11 @@ export async function estados(prevState: any, formData: FormData) {
 }
 export async function buscaDadosPromptDoBOt() // BUscar no banco ou na API DO N8N  o prompt do BOT
 {
+
+ // const userReturn = await whatsappInstanceByUser();
+
+ //console.log(userReturn);
+
   if (!textoUsr)
     return "Você é um agente de vendas. Sua função é vender produtos X, Y, Z." + textoUsr;
   else {
