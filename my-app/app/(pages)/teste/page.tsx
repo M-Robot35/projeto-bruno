@@ -21,30 +21,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 
-const prompts = [
-  {
-    id: "1",
-    nome: "Default",
-    prompt: " voce e o bo1",
-    dataCriacao: "01/02/1237",
-    status: false
-  },
-  {
-    id: "2",
-    nome: "Prompt 1",
-    prompt: " voce e o bot2",
-    dataCriacao: "01/02/1237",
-    status: true
-  },
-  {
-    id: "3",
-    nome: "Prompt Recuperação",
-    prompt: " voce e o bo3",
-    dataCriacao: "01/02/1237",
-    status: false
-  },
-];
-
+const prompts = await buscaDadosPromptDoBOt();
 //helper
 // Adicionar Item    setItems([...objeto, items])
 // Excluir   Item    setItems(items.filter(item=>item.prop!=prop))

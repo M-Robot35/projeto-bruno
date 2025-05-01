@@ -60,13 +60,27 @@ export async function buscaDadosPromptDoBOt() // BUscar no banco ou na API DO N8
 {
 
  // const userReturn = await whatsappInstanceByUser();
-
- //console.log(userReturn);
-
-  if (!textoUsr)
-    return "Você é um agente de vendas. Sua função é vender produtos X, Y, Z." + textoUsr;
-  else {
-    return textoUsr
-  }
-
+ return [
+  {
+    id: "1",
+    nome: "Default",
+    prompt: " voce e o bo1",
+    dataCriacao: "01/02/1237",
+    status: false
+  },
+  {
+    id: "2",
+    nome: "Prompt 1",
+    prompt: " voce e o bot2",
+    dataCriacao: "01/02/1237",
+    status: true
+  },
+  {
+    id: "3",
+    nome: "Prompt Recuperação",
+    prompt: " voce e o bo3",
+    dataCriacao: "01/02/1237",
+    status: false
+  },
+];
 }
