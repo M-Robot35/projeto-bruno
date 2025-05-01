@@ -45,17 +45,42 @@ const prompts = [
   },
 ];
 
+//helper
+// Adicionar Item    setItems([...objeto, items])
+// Excluir   Item    setItems(items.filter(item=>item.prop!=prop))
+// Atualizar Item    setItems(item.map(item=>item.prop==prop?new item:item))
+
+
 export default function Page() {
 
   //const [dadosBot, setDadosBot] = useState<string | "">("");
-
   const [dadosBot, setDadosBot] = useState<typeof prompts>(prompts);
 
+  const add = (id: string, novoValor: string) => {
+    setDadosBot(prev =>
+      prev.map(item =>
+        item.id === id ? { ...item, prompt: novoValor } : item
+      )
+    );
+  };
+
+  const atualizarStatus = (id: string, novoStatus: boolean) => {
+    setDadosBot(prev =>
+      prev.map(item =>
+        item.id === id
+          ? { ...item, status: novoStatus }
+          : { ...item, status: false } // desativa os outros
+      )
+    );
+  };
+
+  const salvarAlteracoes = ()=> {
+    console.log(dadosBot)
+  }
+
+  
   const [isEnabled, setIsEnabled] = useState(true);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-
-
-
   // Usando useEffect para buscar os dados de forma assíncrona
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -84,7 +109,7 @@ export default function Page() {
           {
             dadosBot.map((item) => {
               return (
-                <Accordion type="single" collapsible className="w-full">
+                <Accordion key={item.id} type="single" collapsible className="w-full">
                   <AccordionItem value="item-1">
 
                     <AccordionTrigger>{item.nome}</AccordionTrigger>
@@ -93,22 +118,22 @@ export default function Page() {
                       <Textarea className="gap-2"
                         name="textAreaInput"
                         placeholder="Sua mensagem aqui"
-                        // onChange={event => setDadosBot(event.target.value)}
+                        onChange={event => add(item.id, event.target.value)}
                         // value={dadosBot1.find(Item => Item.status == true)?.prompt}
-                        value={item.prompt}
+                        value={item.prompt}                       
                       />
                       <Switch className="gap-2 mt-2"
                         checked={item.status}
-                      //onCheckedChange={n}                    
+                        onCheckedChange={(checked) => atualizarStatus(item.id, checked)}                 
                       /><label className="ml-3">Ativar/Desativar Prompt</label>
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
               )
             })}
+            <div className="w-full text-end"><Button onClick={salvarAlteracoes}>Salvar alterações</Button></div>
         </div>
       </div>
-
     </section>
   );
 }
