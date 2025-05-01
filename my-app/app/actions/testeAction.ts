@@ -10,39 +10,15 @@ type EstadoPayload = {
 let textoUsr = "";
 
 
-const prompts =[
-  {
-    id:"",
-    nome:"",
-    prompt:"",
-    dataCriacao:"",
-    status:true
-  },
-  {
-    id:"",
-    nome:"",
-    prompt:"",
-    dataCriacao:"",
-    status:false
-  },
-  {
-    id:"",
-    nome:"",
-    prompt:"",
-    dataCriacao:"",
-    status:true
-  },
-];
-
 export async function estados(prevState: any, formData: FormData) {
   // Pegando o que o usuário digitou no formulário
   const textoUsuario = formData.get("textAreaInput")?.toString() || "";
   const textoBot = await buscaDadosPromptDoBOt();
 
-  if (textoUsuario !== textoBot) {
-    textoUsr = textoUsuario;
+  // if (textoUsuario !== textoBot) {
+  //   textoUsr = textoUsuario;
 
-  }
+  // }
   // Buscando a resposta do bot
   //const textoBot = await buscaDadosPromptDoBOt();  // Busca os dados no banco ou n8n
 
