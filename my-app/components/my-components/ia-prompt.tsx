@@ -5,6 +5,7 @@ import { useActionState, useState, useEffect } from "react"; // Estudando
 import { Textarea } from "@/components/ui/textarea";
 import { estados, buscaDadosPromptDoBOt } from "@/app/actions/testeAction";
 import { Switch } from "@/components/ui/switch";
+import { ModalComInput } from "./ia-modal-adiconar-prompt";
 
 import {
   User,
@@ -32,7 +33,7 @@ const IAPrompt = () => {
 
   const [dadosBot, setDadosBot] = useState<typeof users>(users);
   const [isEnabled, setIsEnabled] = useState(true);
-
+  const [modalAberto, setModalAberto] = useState(false);
 
   const toggleSwitch = () => {
     setIsEnabled(previousState => !previousState)
@@ -68,10 +69,7 @@ const IAPrompt = () => {
     //Enviar pro banco as alterações
     console.log(dadosBot)
   }
-
-  const chamarModal = () => {
-    alert("Aqui chama o modal pra inserir um novo prompt/ teste1");
-  }
+  
   return (
 
     <section>
@@ -80,7 +78,11 @@ const IAPrompt = () => {
 
           <div className="flex justify-between items-center rounded-md w-full h-15 border px-4 py-2">
             <div>
-              <Button onClick={chamarModal}>Adicionar Prompt</Button>
+
+              <div className="p-4">
+                <Button onClick={() => setModalAberto(true)}>Inserir um novo Prompt</Button>
+                <ModalComInput open={modalAberto} onOpenChange={setModalAberto} />
+              </div>            
             </div>
 
             <div className="flex items-center gap-2">
