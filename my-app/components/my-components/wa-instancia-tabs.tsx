@@ -6,6 +6,7 @@ import InstanceProxy from "./wa-proxy";
 import InstanceGroup from "./wa-group";
 import InstanceProfile from "./wa-profile";
 import InstanceSchundlerWhatsapp from "./wa-schundler";
+import IAPrompt from "./promptsIa";
 
 export interface IIinstaceParams {
   instanceName:string
@@ -18,6 +19,7 @@ export default function InstanciasTabs({apiKey, instanceName}:IIinstaceParams) {
   console.log(apiKey,instanceName)
    const conteudos:Record<string, JSX.Element>= {
       profile: <InstanceProfile  instanceName={instanceName}  apikey={apiKey}/>,
+      IA:<IAPrompt/>,
       schundler: <InstanceSchundlerWhatsapp />,
       grupos: <InstanceGroup  instanceName={instanceName}  apikey={apiKey}/>,
       proxy: <InstanceProxy apiKey={apiKey} instanceName={instanceName}/>,
