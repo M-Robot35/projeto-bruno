@@ -69,19 +69,30 @@ const IAPrompt = () => {
     console.log(dadosBot)
   }
 
+  const chamarModal = () => {
+    alert("Aqui chama o modal pra inserir um novo prompt/ teste1");
+  }
   return (
 
     <section>
       <div className="">
         <div className="w-full">
 
-          <div className="rounded-md items-end text-end gap-2 w-full h-15 border pt-2 pr-4">
-            <Switch id="ativarBot" className="gap-2 mt-2"
-              checked={isEnabled}
-              onCheckedChange={toggleSwitch}
-            /><label className="ml-3">Ativar/Desativar Robô</label>
+          <div className="flex justify-between items-center rounded-md w-full h-15 border px-4 py-2">
+            <div>
+              <Button onClick={chamarModal}>Adicionar Prompt</Button>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Switch
+                id="ativarBot"
+                checked={isEnabled}
+                onCheckedChange={toggleSwitch}
+              />
+              <label htmlFor="ativarBot">Ativar/Desativar Robô</label>
+            </div>
           </div>
-          
+
           {
             dadosBot.map((item) => {
               return (

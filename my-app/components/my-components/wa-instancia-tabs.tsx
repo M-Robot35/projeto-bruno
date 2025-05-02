@@ -6,7 +6,7 @@ import InstanceProxy from "./wa-proxy";
 import InstanceGroup from "./wa-group";
 import InstanceProfile from "./wa-profile";
 import InstanceSchundlerWhatsapp from "./wa-schundler";
-import IAPrompt from "./promptsIa";
+import IAPrompt from "./ia-prompt";
 
 export interface IIinstaceParams {
   instanceName:string
