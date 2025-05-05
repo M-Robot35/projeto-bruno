@@ -12,83 +12,85 @@ import { evolutionEvents } from "@/app/services/evolution/evoluitonTypes/instanc
 import { webhookGetAction, webhookUpdateAction } from "@/app/actions/instanceComponentsActions"
 
 
-export default function InstanceWebhook(data: parametrosInstancia){
-    const {apikey, instanceName }= data
-    const [eventss, setEvents]= useState<string[]>([])
-    const [webhookActive, setWebhookActive]= useState(false)
-    const [byEvents, setByEvents]= useState(false)
-    const [base64, setBase64]= useState(false)
+export default function InstanceWebhook(data: parametrosInstancia) {
+    const { apikey, instanceName } = data
+    const [eventss, setEvents] = useState<string[]>([])
+    const [webhookActive, setWebhookActive] = useState(false)
+    const [byEvents, setByEvents] = useState(false)
+    const [base64, setBase64] = useState(false)
 
-    const [urll, setUrl]= useState<string>('')
-    const [check, setCheck]= useState<boolean>(false)
+    const [urll, setUrl] = useState<string>('')
+    const [check, setCheck] = useState<boolean>(false)
 
 
-    const webhookget= async ()=>{
-        const execute= await webhookGetAction(null, {apikey, instanceName})
-        if(!execute){
+    const webhookget = async () => {
+        const execute = await webhookGetAction(null, { apikey, instanceName })
+        if (!execute) {
             Logs.error('InstanceWebhook', 'não tem instancias')
             return
         }
-        
-        const {enabled, events, webhookBase64, url, webhookByEvents} = execute
+
+        const { enabled, events, webhookBase64, url, webhookByEvents } = execute
         setUrl(url)
         setEvents(events)
         setBase64(webhookBase64)
         setByEvents(webhookByEvents)
-        setWebhookActive(enabled)        
+        setWebhookActive(enabled)
     }
 
-    const webhookEvents= (evento:string)=>{
-        if(!eventss.includes(evento)){
-            const x:string[]= [...eventss, evento]
+    const webhookEvents = (evento: string) => {
+        if (!eventss.includes(evento)) {
+            const x: string[] = [...eventss, evento]
             setEvents(x)
             return
-        }        
+        }
         setEvents(eventss.filter(item => item != evento))
     }
-    
-    useEffect(()=>{ webhookget() }, [])
 
-    const checkUrlWebhook= (frase:string)=>{
-        if(frase == '') {
+    useEffect(() => { webhookget() }, [])
+
+    const checkUrlWebhook = (frase: string) => {
+        if (frase == '') {
             setUrl('')
             return setCheck(false)
         }
-        setUrl(frase.trim())        
+        setUrl(frase.trim())
     }
 
-    const webhookSet= async ()=>{
-        if(webhookActive && eventss.length == 0){
-            toast('[ ERROR ] Webhook',{
-                description:'Você deve ter ao menos 1 Evento Selecionado'
+    const webhookSet = async () => {
+        if (webhookActive && eventss.length == 0) {
+            toast('[ ERROR ] Webhook', {
+                description: 'Você deve ter ao menos 1 Evento Selecionado'
             })
             return
         }
 
-        const execute= await webhookUpdateAction(null, {apikey, instanceName, options:{
-            base64: base64,
-            byEvents: byEvents,
-            url: urll,
-            enabled: webhookActive,
-            events: eventss
-        }})
+        const execute = await webhookUpdateAction(null, {
+            apikey, instanceName, options: {
+                base64: base64,
+                byEvents: byEvents,
+                url: urll,
+                enabled: webhookActive,
+                events: eventss
+            }
+        })
 
-        if(!execute){
-            toast('[ ERROR ] Webhook',{
-                description:'Nada foi feito em  webhook UPDATE'
+        if (!execute) {
+            toast('[ ERROR ] Webhook', {
+                description: 'Nada foi feito em  webhook UPDATE'
             })
             return
         }
 
-        const {enabled, events, webhookBase64, url, webhookByEvents} = execute
+        const { enabled, events, webhookBase64, url, webhookByEvents } = execute
         setUrl(url)
         setEvents(events)
         setBase64(webhookBase64)
         setByEvents(webhookByEvents)
         setWebhookActive(enabled)
 
-        toast('[ SUCCESS ] Webhook',{
-            description:'Webhooks atualizados com sucesso'
+        toast('[ SUCCESS ] Webhook', {
+            description: 'Webhooks atualizados com sucesso'
         })
     }
 
@@ -96,7 +98,7 @@ export default function InstanceWebhook(data: parametrosInstancia){
         <section>
             <div className=" mb-4 rounded-sm ">
                 <div className="flex justify-between mb-2">
-                    <Label className="text-green-500 font-bold mb-2">CONFIGURAÇÕES</Label>                   
+                    <Label className="text-green-500 font-bold mb-2">CONFIGURAÇÕES</Label>
                     <Button className="" onClick={webhookSet} disabled={check} variant={'outline'}>Salvar</Button>
                 </div>
                 <div className="flex mb-2 justify-between items-center border border-gray-700 p-2 rounded-sm">
@@ -106,7 +108,7 @@ export default function InstanceWebhook(data: parametrosInstancia){
                         checked={webhookActive}
                         onCheckedChange={() => setWebhookActive(!webhookActive)}
                         className={`${''}`}
-                    />                    
+                    />
                 </div>
 
                 <div className="flex mb-2 justify-between items-center border border-gray-700 p-2 rounded-sm">
@@ -117,7 +119,7 @@ export default function InstanceWebhook(data: parametrosInstancia){
                         checked={byEvents}
                         onCheckedChange={() => setByEvents(!byEvents)}
                         className={`${''}`}
-                    />                    
+                    />
                 </div>
 
                 <div className="flex mb-2 justify-between items-center border border-gray-700 p-2 rounded-sm">
@@ -128,50 +130,51 @@ export default function InstanceWebhook(data: parametrosInstancia){
                         checked={base64}
                         onCheckedChange={() => setBase64(!base64)}
                         className={`${''}`}
-                    />                    
+                    />
                 </div>
 
                 <div className="mt-2">
-                    <div  className="flex justify-between  items-center border border-gray-700 p-2 rounded-sm">
+                    <div className="flex justify-between  items-center border border-gray-700 p-2 rounded-sm">
                         <Label htmlFor=''>WEBHOOK URL</Label>
-                        <Input 
-                        className={`border ${ check? 'border-red-600':'border-gray-950'} w-[70%]`}
-                        disabled={!webhookActive}
-                        value={urll} 
-                        onChange={(e)=>{checkUrlWebhook(e.target.value)}}
-                        type="text" 
-                        placeholder="https://exemplo.com"
-                    />                  
+                        <Input
+                            className={`border ${check ? 'border-red-600' : 'border-gray-950'} w-[70%]`}
+                            disabled={!webhookActive}
+                            value={urll}
+                            onChange={(e) => { checkUrlWebhook(e.target.value) }}
+                            type="text"
+                            placeholder="https://exemplo.com"
+                        />
                     </div>
                 </div>
             </div>
 
             <div className="flex flex-col gap-2">
-            <div className="flex justify-between mb-2">
-                <Label className="text-green-500 font-bold text">EVENTOS DISPÓNIVEIS</Label>                  
+                <div className="flex justify-between mb-2">
+                    <Label className="text-green-500 font-bold text">EVENTOS DISPÓNIVEIS</Label>
+                </div>
+
+                {
+                    evolutionEvents.map((item, index) => (
+                        <div key={index} className="flex justify-between items-center border border-gray-700 p-2 rounded-sm">
+                            <Label htmlFor={item.evento} title={item.descricao}>{item.evento}</Label>
+                            <Switch
+                                id={item.evento}
+                                disabled={!webhookActive}
+                                checked={eventss.includes(item.evento)}
+                                onCheckedChange={() => webhookEvents(item.evento)}
+                                title={item.descricao}
+                                className={`${''}`}
+                            />
+                        </div>
+                    ))
+                }
+                <div className="text-right">
+                    <Button className="" onClick={webhookSet} disabled={check} variant={'outline'}>
+                        Salvar
+                    </Button>
+                </div>
             </div>
-            
-            {
-                evolutionEvents.map((item, index) => (
-                    <div key={index} className="flex justify-between items-center border border-gray-700 p-2 rounded-sm">
-                        <Label htmlFor={item.evento} title={item.descricao}>{item.evento}</Label>
-                        <Switch
-                            id={item.evento}
-                            disabled={!webhookActive}
-                            checked={eventss.includes(item.evento)}
-                            onCheckedChange={() => webhookEvents(item.evento)}
-                            title={item.descricao}
-                            className={`${''}`}
-                        />                    
-                    </div>
-                ))                
-            }
-            <div className="">
-                <Button className="" onClick={webhookSet} disabled={check} variant={'outline'}>Salvar</Button>
-            </div>
-        </div>
-            
+
         </section>
     )
 }
-

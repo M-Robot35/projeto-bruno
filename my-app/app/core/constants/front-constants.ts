@@ -25,5 +25,6 @@ export const frontConstants={
         { name:'evolution', url:'http://localhost:8080/manager' },
         { name:'evolution postman', url:'https://www.postman.com/agenciadgcode/evolution-api/collection/1wphumy/evolution-api-v2-2-0-v2-2-1'},
         { name:'evolution github', url:'https://github.com/EvolutionAPI/evolution-api'},
+        { name:'N8N', url:'http://localhost:5678/home/workflows'},
     ]
 }

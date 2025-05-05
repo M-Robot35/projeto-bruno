@@ -22,21 +22,30 @@ import { useActionState } from "react"
 import { FormWhatsappCreateInstance,whatsappDelete,whatsappStatus, whatsappInstanceByUser } from "@/app/actions/whatsappActions"
 import { toast } from "sonner"
 
+type requerements= {
+    instanceName?:string,
+    handleReload?:any
+}
+
 const initStateWpp= {
     qrCode:'',
     showCode:false,
     name:''
 }
 
-type requerements= {
-    instanceName?:string,
-    handleReload?:any
-}
+const time=30
 
 export default function WhatsaCreateInstanceUser({...Props}:requerements){
     const [state, setState]= useState<typeof initStateWpp>(initStateWpp)
     const [wppState, wppAction, wppPending]= useActionState(FormWhatsappCreateInstance,null)
-    
+    const [timeLeft, setTimeLeft] = useState(time);
+    const [isActive, setIsActive] = useState(false);  
+
+    // ativa o Timer
+    if(state.showCode && !isActive){
+        setIsActive(true);
+    }
+
     useEffect(()=>{
         if(!wppState){
             toast.error('Não foi possivel Criar a instancia')
@@ -46,13 +55,13 @@ export default function WhatsaCreateInstanceUser({...Props}:requerements){
         const qr= wppState.qrcode.base64
 
         setState((prev)=>{
+            
             return {...prev, 
                 qrCode:qr, 
                 showCode:true,
                 name: wppState.instance.instanceName,
             }
         })
-
         Props.handleReload()        
     },[wppState])
 
@@ -69,6 +78,25 @@ export default function WhatsaCreateInstanceUser({...Props}:requerements){
         toast.success('Ah instancia foi Deletada com Sucesso !!!')
     }
 
+    // checa se a instancia foi escaneada, caso não for ele a exclui
+    const checkLoggerInstance= async ()=>{
+        const instance= (await whatsappInstanceByUser()).find(inst => inst.name == state.name)
+        if(!instance){
+            return
+        }
+        // deleta a instancia não logada
+        if(instance.connectionStatus != 'open'){
+            await cancelarInstancia()            
+        }
+        // atualiza o status da instancia para connectada
+        if(instance.connectionStatus == 'open'){
+            Props.handleReload() 
+        }
+        setIsActive(false);
+        setTimeLeft(time)
+        clear()
+    }
+
     // limpar dados
     function clear(){
         setState((prev)=>{
@@ -79,6 +107,25 @@ export default function WhatsaCreateInstanceUser({...Props}:requerements){
             }
         })
     }
+
+    // timer
+    useEffect(() => {
+        if(!isActive || timeLeft <= 0){
+            if(timeLeft <= 0){
+                checkLoggerInstance()
+            }
+            return
+        }
+    
+        const intervalId = setInterval(() => {
+            console.log(timeLeft)
+          setTimeLeft(prev => prev - 1);
+        }, 1000);
+        
+        
+        // Limpa o intervalo ao desmontar ou quando chegar a 0
+        return () => clearInterval(intervalId);
+    }, [isActive, timeLeft]);
 
     return (
         <section >
@@ -93,47 +140,46 @@ export default function WhatsaCreateInstanceUser({...Props}:requerements){
                         Automatize o seu Whatsapp Message
                     </DialogDescription>
                     </DialogHeader>
-                    <form action={wppAction} >
-                        <div className="grid gap-4 py-4">
-                            <div className="grid w-full items-center gap-2">
-                                <Label htmlFor="instancia" className="text-right">
-                                Nome da Instancia
-                                </Label>
-                                <Input
-                                id="instancia" 
-                                name="instancia"
-                                {...(state.qrCode.length > 1)? {value:`${state.name}`}:''}
-                                className="col-span-3"
-                                placeholder="Minha instancia"
-                                disabled={state.qrCode.length > 1}
-                                />
-                            </div>
-                        </div>
-                    
-                        <DialogFooter>                    
-                        {
-                            state.qrCode.length == 0 && (
-                                !wppPending?
-                                <Button type="submit">Criar</Button>:
-                                <Button type="reset" disabled>Criando...</Button>
-                            )
-                        }
-                        </DialogFooter>
-                    </form>
                     {
-                        (state.qrCode.length > 1) && (
-                            <div className='grid grid-cols-2 gap-2'>
-                                <Button onClick={cancelarInstancia}>Deletar</Button>
-                                <Button onClick={clear}>Fechar</Button>
-                            </div>
+                        !state.showCode && (
+                            <form action={wppAction} >
+                                <div className="grid gap-4 py-4">
+                                    <div className="grid w-full items-center gap-2">
+                                        <Label htmlFor="instancia" className="text-right">
+                                        Nome da Instancia
+                                        </Label>
+                                        <Input
+                                        id="instancia" 
+                                        name="instancia"
+                                        {...(state.qrCode.length > 1)? {value:`${state.name}`}:''}
+                                        className="col-span-3"
+                                        placeholder="Minha instancia"
+                                        disabled={state.qrCode.length > 1}
+                                        />
+                                    </div>
+                                </div>
+                            
+                                <DialogFooter>                    
+                                {
+                                    state.qrCode.length == 0 && (
+                                        !wppPending?
+                                        <Button type="submit">Criar</Button>:
+                                        <Button type="reset" disabled>Criando...</Button>
+                                    )
+                                }
+                                </DialogFooter>
+                            </form>
                         )
                     }
+                    
                     {
                         state.showCode && (
-                            <div className=" self-start">
-                                <div className="sm:w-[300px]">
-                                    <p className="font-bold text-center mb-1">30s para Escaneie o QrCode</p>
-                                    <img src={state.qrCode} alt="Image" className=" w-full h-full rounded-md  object-cover" />
+                            <div className="w-full text-center relative">
+                                <div className=" w-full  text-center items-center">
+                                    <p className="font-bold mb-1">{timeLeft}s para Escaneie o QrCode</p>
+                                    <div className='flex justify-center'>
+                                        <img src={state.qrCode} alt="Image" className="h-full rounded-md  object-cover w-[250px] bg-amber-700" />
+                                    </div>
                                 </div>
                             </div>
                         )

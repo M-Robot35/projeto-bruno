@@ -92,7 +92,7 @@ export default function TableGroup({apikeyy, instanceNamee, grupos }:{apikeyy:st
                     break;
             }
             
-            //partFilterUp.participants.push(...filtered);
+            partFilterUp.participants.push(...filtered);
         });
         
         partFilterUp.participants = Array.from(
@@ -122,7 +122,7 @@ export default function TableGroup({apikeyy, instanceNamee, grupos }:{apikeyy:st
              setCarregando(false);
         };
 
-        //fetchData();
+        fetchData();
 
         return () => {
             isMounted = false;

@@ -63,7 +63,6 @@ export async function webhookUpdateAction(_:any,data:dataUpdateWebhook):Promise<
 // ---------------------------------------------------------------------------------
 export async function gruposGetAction(_:any,data:dataConfig):Promise<TypeGroupOutput[]|null>{
     const execute= await WhatsappMessage.grupos.groupsAll( data.instanceName, data.apikey)
-    console.log('========================   -----  ',execute)
     return execute
 }
 

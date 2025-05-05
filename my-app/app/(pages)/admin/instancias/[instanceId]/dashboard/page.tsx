@@ -29,7 +29,6 @@ export default async function InstanceOptions({ params }: instaceOptions) {
   if(!getInstance) return redirect('/admin/instancias')
 
   const {name,token,...props}= getInstance
-  const gp= await whatsappMeusGrupos(name, token)
 
   return (
     <section className="container grid grid-cols-1 gap-4 p-2 rounded-sm ">
@@ -54,18 +53,18 @@ export default async function InstanceOptions({ params }: instaceOptions) {
         </div>
         
         <div className="aspect-3/1 object-cover border p-2 rounded-sm  bg-muted/50">
-        <div className="flex flex-row gap-2 font-bold"><MessageCirclePlus/> <span>Contatos</span></div>
+        <div className="flex flex-row gap-2 font-bold"><MessageCirclePlus/> <span>Chats</span></div>
           <h1 className="text-center font-extrabold text-2xl mt-2">{props._count.Chat}</h1>
         </div>
 
         <div className="aspect-3/1 object-cover border p-2 rounded-sm bg-muted/50">
-        <div className="flex flex-row gap-2 font-bold"><BotMessageSquare/> <span>Contatos</span></div>
+        <div className="flex flex-row gap-2 font-bold"><BotMessageSquare/> <span>Mensagens</span></div>
           <h1 className="text-center font-extrabold text-2xl mt-2">{props._count.Message}</h1>
         </div>
       </section>
 
       <section className="grid grid-cols-1 gap-4 bg-muted/50 p-2 rounded-sm">
-        <InstanciasTabs apiKey={token} instanceName={name}/>
+        <InstanciasTabs apiKey={token} instanceName={name} />
       </section>
     </section>
   );

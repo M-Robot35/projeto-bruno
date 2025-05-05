@@ -72,7 +72,7 @@ export default function WaInstancias({instancia}:WaInstancias){
     const handleReload= async ()=>{
         setInstancias(await whatsappInstanceByUser())
     }
-    
+        
     useEffect(()=>{        
         handleReload()
         setTimeout(()=>{handleReload()}, 5000)

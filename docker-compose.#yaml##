@@ -1,7 +1,5 @@
 version: '3.9'
 services:
-
-  # EVOLTION API ====================================
   evolution-api:
     container_name: evolution_api
     image: atendai/evolution-api:v2.1.1
@@ -32,57 +30,12 @@ services:
       - CACHE_REDIS_URI=redis://evo_redis:6379/1
       - CACHE_REDIS_PREFIX_KEY=evolution-api
       - CACHE_REDIS_SAVE_INSTANCES=false
-    
 
     ports:
       - "8080:8080"   
     volumes:
       - evolution_instances:/evolution/instances
 
-  # IMAGEM DO N8N  ====================================
-  n8n:
-    image: n8nio/n8n:1.90.2
-    restart: always
-    ports:
-      - "5678:5678"
-    environment:
-      #- N8N_HOST=${SUBDOMAIN}.${DOMAIN_NAME}
-      #- N8N_PORT=5678
-      #- N8N_PROTOCOL=https
-      #- NODE_ENV=production
-      #- WEBHOOK_URL=https://${SUBDOMAIN}.${DOMAIN_NAME}/
-      - GENERIC_TIMEZONE=America_Sao_Paulo
-    volumes:
-      - n8n_data:/home/node/.n8n
-      - ./local-files:/files
-
-  flowise:
-        image: flowiseai/flowise:2.2.6
-        restart: always
-        environment:
-         - FLOWISE_USERNAME=user
-         - FLOWISE_PASSWORD=1234
-
-        ports:
-            - '4000:3000'
-        
-        volumes:
-            - ~/.flowise:/root/.flowise
-        entrypoint: /bin/sh -c "sleep 3; flowise start"
-
-
-  # RabbitMq ====================================
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
-    ports:
-      - 5672:5672
-      - 15672:15672  #dashboard
-    volumes:
-      - ./rabbitmq_data:/var/lib/rabbitmq
-
-      
-  # DB POSTGRES  ====================================
   db:
     image: postgres:latest
     restart: always
@@ -93,9 +46,7 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-
-  
-  # PAINEL ADMIN DB ====================================
+ 
   adminer:
     image: adminer
     restart: always
@@ -103,8 +54,7 @@ services:
       - "8082:8080"
     depends_on:
       - db
-  
-  # REDIS ====================================
+
   evo_redis:
     image: redis:latest    
     container_name: redis
@@ -113,21 +63,9 @@ services:
       - ./evolution_redis:/data
     ports:
       - 6379:6379
-  
-  # REDIS Painel====================================
-  redis-insight:
-    image: redis/redisinsight:latest
-    restart: always
-    ports:
-      - "5540:5540"
-    volumes:
-      - redis-insight:/data
+
       
 volumes:
   evolution_instances:
   pgdata:
   evolution_redis:
-  redis-insight:
-  n8n_data:
-  local-files:
-  rabbitmq_data:
