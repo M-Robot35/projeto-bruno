@@ -9,7 +9,6 @@ import {
     whatsappRestart
 } from "@/app/actions/whatsappActions"
 import WhatsaCreateInstanceUser from "@/components/my-components/wa-createInstance"
-import { toast } from "sonner"
 import {
     User, 
     MessageCirclePlus,
@@ -27,7 +26,6 @@ import {
     TableBody,
     TableCaption,
     TableCell,
-    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
