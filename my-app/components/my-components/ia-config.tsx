@@ -124,7 +124,7 @@ export default function IaConfig() {
             </div>
             
             {/* Prompts para orientar o Bot */}
-            <div className="flex flex-col gap-4 bg-gray-800 ">
+            <div className="flex flex-col gap-4 ">
                 <div className="w-full">
                     <div className="flex justify-between mt-4">
                         <div>

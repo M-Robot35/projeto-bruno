@@ -1,10 +1,15 @@
 'use server'
 import { auth } from "@/auth"
 import userModel,{user} from "../database/db-model/user-model"
+import { redirect } from 'next/navigation'
 
 
 export async function getUserAction():Promise<user>{
    const session = await auth()
+   if(!session){
+      await redirect('/auth/login')
+      return
+   }
    const getUserId= await userModel.findById(session!.user.id)
    return getUserId as user    
 }

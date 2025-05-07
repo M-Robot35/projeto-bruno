@@ -1,26 +1,40 @@
-import BackspacePage from "@/components/my-components/back-space"
+import DashStatus from "./dash-status"
 
+const all=[
+  {
+    name: "Instâncias Whatsapp",
+    icons: "/icons/icons-whatsapp.gif",
+    valor: 0
+  }
+]
 
 export default function Page() {
   
   return (
-    <div className="container flex flex-1 flex-col gap-2 p-4">
-      <BackspacePage />
-      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-
-        <div className="bg-muted/50 aspect-video rounded-xl" >
-          <div className="p-4 relative  h-full">
-            <h1>Whatsapp Instâncias</h1>
-            <h1 className="flex justify-center font-extrabold text-4xl self-baseline mt-2">0</h1>
-          </div>
+    <section className="container flex flex-1 flex-col gap-4 p-4">
+      <div className="inline-flex gap-2">
+        
+        <div className="inline-flex gap-2 border px-2 rounded-sm">
+          <h1 className="font-bold">Plano</h1>
+          <p>Free</p>
         </div>
-        
-        <div className="bg-muted/50 aspect-video rounded-xl" />
-        
-        <div className="bg-muted/50 aspect-video rounded-xl" />
+
+        <div className="inline-flex gap-2 border px-2 rounded-sm">
+          <h1 className="font-bold">Vencimento</h1>
+          <p>22/10/2025</p>
+        </div>       
 
       </div>
-      <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
-    </div>
+
+      <DashStatus/>
+
+      <section className="grid auto-rows-min gap-4 md:grid-cols-3">        
+
+      </section>
+
+      {/* <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" /> */}
+
+
+    </section>
   )
 }

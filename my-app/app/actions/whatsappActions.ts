@@ -110,7 +110,7 @@ export async function whatsappStatus(instancia:string):Promise<erroType|successT
     const {id,email,role,name} = await sessionUserAction()
     const execute= await WhatsappMessage.instancia.instancia_reestart(instancia)
 
-    if(execute.error){        
+    if(execute['error']){        
         return {"error":true,"message": `[object Object]`}
     }
     return {"instance":{"instanceName":`${instancia}`,"state":"open"}}

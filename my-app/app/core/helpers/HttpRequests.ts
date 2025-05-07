@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { Logs } from '../logs';
 
 export interface IHttpClient {
-    request(config: IHttpRequestConfig): Promise<any>;
+    request<T=any>(config: IHttpRequestConfig): Promise<T>;
 }
 
 export interface IHttpRequestConfig<T=any> {
@@ -15,7 +15,7 @@ export interface IHttpRequestConfig<T=any> {
 
 
 class AxiosHttpClient implements IHttpClient {
-    async request(config: IHttpRequestConfig): Promise<any|null> {
+    async request<T=any>(config: IHttpRequestConfig): Promise<T|null> {
         const axiosConfig: AxiosRequestConfig = {
             url: config.url,
             method: config.method,

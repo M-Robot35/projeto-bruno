@@ -28,7 +28,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         if(!check.success) return null        
 
-        return await AuthorizeUser({...check.data})        
+        return await AuthorizeUser({...check.data} as any)        
       },
     }),
   ],
@@ -69,6 +69,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signOut: "/auth/login",
     error: "/"
   },
-
+  // Permitir localhost como host confiável
+  trustHost: true,
   secret: process.env.NEXTAUTH_SECRET
 })

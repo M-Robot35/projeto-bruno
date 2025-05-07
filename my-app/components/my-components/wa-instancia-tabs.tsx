@@ -7,6 +7,7 @@ import InstanceGroup from "./wa-group";
 import InstanceProfile from "./wa-profile";
 import InstanceSchundlerWhatsapp from "./wa-schundler";
 import IaConfig from "./ia-config";
+import { JSX } from 'react';
 
 export interface IIinstaceParams {
   instanceName: string;
@@ -17,12 +18,12 @@ export interface IIinstaceParams {
 const CACHE_TTL = 5 * 60 * 1000;
 
 export default function InstanciasTabs({ apiKey, instanceName }: IIinstaceParams) {
-  const [activeTab, setActiveTab] = useState("profile");
+  const [activeTab, setActiveTab] = useState("ia");
 
   // Cache com timestamp para controlar expiração
   const tabCache = useRef<Record<string, { content: JSX.Element; timestamp: number }>>({});
 
-  const createTabContent = (tab: string): JSX.Element => {
+  const createTabContent = (tab: string): JSX.Element  => {
     switch (tab.toLowerCase()) {
       case "profile":
         return <InstanceProfile instanceName={instanceName} apikey={apiKey} />;
@@ -59,7 +60,8 @@ export default function InstanciasTabs({ apiKey, instanceName }: IIinstaceParams
     return cache.content;
   };
 
-  const tabName = ["profile", "IA", "proxy", "webhook", "settings"];
+  //const tabName = ["profile", "IA", "proxy", "webhook", "settings"];
+  const tabName = ["IA", "proxy", "webhook", "settings"];
 
   return (
     <div className="mt-4">

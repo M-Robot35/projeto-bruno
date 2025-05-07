@@ -12,7 +12,7 @@ export class WebhookMsgUpdateDTO{
     public fromMe: boolean
     public participant: string
     public status: string
-    public instanceId: string
+    //public instanceId: string
     
     constructor(private readonly data: WebhookUpdate){
         this.event = data.event

@@ -23,11 +23,16 @@ export default function InstanceProfile({apikey, instanceName}: parametrosInstan
     useEffect(()=>{ grupos() },[])
 
     return (
-        <div className="">
+        <section className="">
             {loading && (<Loading/>)}
-            <h1>-------------FAZER O PROFILE -------------</h1>
+            <div>
+                <div className="flex gap-2">
+                    <label htmlFor="">Bot</label>
+                    <span>Ativo</span>
+                </div>
+            </div>
                              
-        </div>
+        </section>
     )
 }
 

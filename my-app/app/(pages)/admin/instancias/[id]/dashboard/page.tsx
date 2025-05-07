@@ -1,4 +1,4 @@
-
+// @ts-ignore
 import InstanciasTabs from "@/components/my-components/wa-instancia-tabs";
 import BackspacePage from "@/components/my-components/back-space";
 import AvatarImageUser from "@/components/my-components/avatar";
@@ -9,23 +9,22 @@ import {
   BotMessageSquare,  
 } from "lucide-react"
 
-import { whatsappInstanceByID, whatsappMeusGrupos } from "@/app/actions/whatsappActions";
+import { whatsappInstanceByID } from "@/app/actions/whatsappActions";
 import { templateTelefone } from "@/app/core/helpers/utils"
 
-interface instaceOptions {
-  params: {
-    instanceId: string
-  }
+interface PageProps {
+  params:Promise<{id:string;}>
+  //searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export default async function InstanceOptions({ params }: instaceOptions) {
-  const {instanceId}= await params
+export default async function InstanceOptions({ params }: PageProps) {
+  const { id } = await params;
   
   // se ñ tiver name e apike return para instancias
-  if(!instanceId)  return redirect('/admin/instancias')
+  if(!id)  return redirect('/admin/instancias')
 
   // pega a instancia pelo ID
-  const getInstance= await whatsappInstanceByID(instanceId)
+  const getInstance= await whatsappInstanceByID(id)
   if(!getInstance) return redirect('/admin/instancias')
 
   const {name,token,...props}= getInstance

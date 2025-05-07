@@ -2,7 +2,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
- 
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,14 +12,14 @@ enum Role {
   ADMIN
   SUPER_ADMIN
 }
- 
+
 model User {
-  id            String          @id @default(cuid())
+  id            String      @id @default(cuid())
   name          String?
   telefone      String?
-  email         String          @unique
-  password      String       
-  role          Role            @default(USER)
+  email         String      @unique
+  password      String
+  role          Role        @default(USER)
   emailVerified DateTime?
   image         String?
   accounts      Account[]
@@ -28,7 +28,7 @@ model User {
 
   // Optional for WebAuthn support
   Authenticator Authenticator[]
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -40,8 +40,9 @@ model Instancia {
   statusConnection String
   numero           String
   hash             String
-  baseCode           String
+  baseCode         String
 
+  bot       Bot[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -49,7 +50,7 @@ model Instancia {
 
   @@map("instancia")
 }
- 
+
 model Account {
   userId            String
   type              String
@@ -62,33 +63,33 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@id([provider, providerAccountId])
 }
- 
+
 model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
- 
+
 model VerificationToken {
   identifier String
   token      String
   expires    DateTime
- 
+
   @@id([identifier, token])
 }
- 
+
 // Optional for WebAuthn support
 model Authenticator {
   credentialID         String  @unique
@@ -99,8 +100,84 @@ model Authenticator {
   credentialDeviceType String
   credentialBackedUp   Boolean
   transports           String?
- 
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@id([userId, credentialID])
+}
+
+// configurações do Bot whatsapp
+model Bot {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  instanceId  String
+  status      BotStatus @default(DESATIVADO)
+  autoStart   Boolean   @default(false) // inicia automaticamente com a instância
+  startTime   DateTime? // horário programado para ligar
+  stopTime    DateTime? // horário programado para desligar
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  prompts   Prompt[]
+  instancia Instancia @relation(fields: [instanceId], references: [id])
+  triggers  Trigger[]
+  logs      BotLog[]
+  Schedule  Schedule?
+}
+
+// Logs do bot
+model BotLog {
+  id        String   @id @default(cuid())
+  botId     String
+  message   String
+  type      LogType
+  createdAt DateTime @default(now())
+
+  bot Bot @relation(fields: [botId], references: [id])
+}
+
+enum LogType {
+  INFO
+  WARNING
+  ERROR
+  SUCCESS
+}
+
+model Prompt {
+  id        String   @id @default(cuid())
+  title     String
+  content   String // texto do prompt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  botId     String
+  bot       Bot      @relation(fields: [botId], references: [id])
+}
+
+model Schedule {
+  id       String  @id @default(cuid())
+  botId    String  @unique
+  cron     String // expressão cron ex: "*/5 * * * *"
+  isPaused Boolean @default(false)
+  bot      Bot     @relation(fields: [botId], references: [id], onDelete: Cascade)
+}
+
+model Trigger {
+  id       String  @id @default(cuid())
+  botId    String
+  keyword  String // palavra-chave que ativa esse trigger
+  response String // resposta que o bot deve enviar
+  order    Int? // ordem no fluxo, se for um chatbot sequencial
+  isActive Boolean @default(true)
+
+  bot Bot @relation(fields: [botId], references: [id])
+}
+
+enum BotStatus {
+  ATIVO // Bot está ligado e funcionando
+  PAUSADO // Bot está temporariamente inativo
+  DESATIVADO // Bot está desligado manualmente
+  AGENDADO // Bot será ativado ou desativado por horário
+  ERRO // Houve algum erro na inicialização
 }

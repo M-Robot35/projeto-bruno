@@ -14,7 +14,7 @@ export type inputType= {
     statusConnection: string;
     numero: string;
     hash: string;
-    baseCode: string;
+    baseCode: string;    
 }
 
 export type InstanciaCreateType= Omit<inputType, 'createdAt'|'updatedAt'|'id'>

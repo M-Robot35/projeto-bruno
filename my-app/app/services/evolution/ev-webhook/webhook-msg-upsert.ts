@@ -1,9 +1,9 @@
-import { Logs } from "@/app/core/system";
+import { Logs } from "@/app/core/logs";
 import WhatsappMessage from "../ev-evolution";
-import botMessageModel from "@/database/db-model/botMessage-model";
-import userModel from "@/database/db-model/user-model";
-import userMessageStatusModel from "@/database/db-model/userMessageStatus-model";
-import instanciaModel from "@/database/db-model/instancia-model";
+//import botMessageModel from "@/database/db-model/botMessage-model";
+import userModel from "@/app/database/db-model/user-model";
+//import userMessageStatusModel from "@/database/db-model/userMessageStatus-model";
+import instanciaModel from "@/app/database/db-model/instancia-model";
 
 
 export class WebhookMsgUpsertDTO{
@@ -85,91 +85,91 @@ export class WebhookMsgUpsert extends WebhookMsgUpsertDTO{
         super(data)
     }
 
-    async execute(){
-        const now = new Date()
-        // pegar usuario pela instance
-        const user = await this.checkBotStatus()
+    // async execute(){
+    //     const now = new Date()
+    //     // pegar usuario pela instance
+    //     const user = await this.checkBotStatus()
 
-        if (!this.fromMe) {
-            // Atualiza o tempo de resposta do usuário ao enviar uma mensagem
-            const updateUserMessageStatus = await userMessageStatusModel.updateMessageStatus(this.instance, { timeToAnswer: now.getTime() })
-            if(!updateUserMessageStatus){
-                Logs.error('WebhookMsgUpsert',`Erro ao atualizar o tempo de resposta do usuário ${user.id} para a instância ${this.instance}`)
-                return
-            }            
-            return;
-        }
-        const userMessageStatus = await userMessageStatusModel.findByUserAndInstance(user.id, this.instance)
+    //     if (!this.fromMe) {
+    //         // Atualiza o tempo de resposta do usuário ao enviar uma mensagem
+    //         const updateUserMessageStatus = await userMessageStatusModel.updateMessageStatus(this.instance, { timeToAnswer: now.getTime() })
+    //         if(!updateUserMessageStatus){
+    //             Logs.error('WebhookMsgUpsert',`Erro ao atualizar o tempo de resposta do usuário ${user.id} para a instância ${this.instance}`)
+    //             return
+    //         }            
+    //         return;
+    //     }
+    //     const userMessageStatus = await userMessageStatusModel.findByUserAndInstance(user.id, this.instance)
         
-        // Verifica se já passaram 5 minutos desde a última mensagem        
-        if (userMessageStatus && now.getTime() - userMessageStatus.timeToAnswer < PAUSE_DURATION) {
-            Logs.success("WebhookMsgUpsert", `Bot pausado para usuário ${user.id}, aguardando tempo limite.`);
-            return;
-        }      
+    //     // Verifica se já passaram 5 minutos desde a última mensagem        
+    //     if (userMessageStatus && now.getTime() - userMessageStatus.timeToAnswer < PAUSE_DURATION) {
+    //         Logs.success("WebhookMsgUpsert", `Bot pausado para usuário ${user.id}, aguardando tempo limite.`);
+    //         return;
+    //     }      
 
 
-        // Buscar o status do bot para este usuário
-        const botStatus = await botMessageModel.findByUserInstance(user.id, this.instance)
+    //     // Buscar o status do bot para este usuário
+    //     const botStatus = await botMessageModel.findByUserInstance(user.id, this.instance)
         
         
-        if(userMessageStatus.isBlocked){
-            Logs.error('WebhookMsgUpsert',`Bot está bloqueado para o usuário ${this.apikey} e número ${this.remoteJid}`)            
-            return
-        }
+    //     if(userMessageStatus.isBlocked){
+    //         Logs.error('WebhookMsgUpsert',`Bot está bloqueado para o usuário ${this.apikey} e número ${this.remoteJid}`)            
+    //         return
+    //     }
 
-        if(botStatus.isActive){
-            Logs.error('WebhookMsgUpsert',`Bot não está ativo para o usuário ${this.apikey} e número ${this.remoteJid}`)            
-            return
-        }
+    //     if(botStatus.isActive){
+    //         Logs.error('WebhookMsgUpsert',`Bot não está ativo para o usuário ${this.apikey} e número ${this.remoteJid}`)            
+    //         return
+    //     }
 
-        this.sendMessage()
-    }        
+    //     this.sendMessage()
+    // }        
 
-    private async sendMessage(){
-        if(this.fromMe){
-            return
-        }       
+    // private async sendMessage(){
+    //     if(this.fromMe){
+    //         return
+    //     }       
 
-        const message = await WhatsappMessage
-        .messagem
-        .sendMessageText({
-            apikey:this.apikey,
-            instance:this.instance,
-            number:this.remoteJid,
-            message:this.message
-        })
-        Logs.success('WebhookMsgUpsert',`Mensagem enviada com sucesso para ${this.remoteJid}`)
-    }
+    //     const message = await WhatsappMessage
+    //     .messagem
+    //     .sendMessageText({
+    //         apikey:this.apikey,
+    //         instance:this.instance,
+    //         number:this.remoteJid,
+    //         message:this.message
+    //     })
+    //     Logs.success('WebhookMsgUpsert',`Mensagem enviada com sucesso para ${this.remoteJid}`)
+    // }
 
-    private async checkBotStatus(){
-        const userInstace= await instanciaModel.findByInstanceName(this.instance)
-        const user = await userModel.findById(userInstace.userId)
-        const botExists = await botMessageModel.findByUserInstance(user.id, this.instance)
-        const userMessageStatus = await userMessageStatusModel.findByUserAndInstance(user.id, this.instance)
+    // private async checkBotStatus(){
+    //     const userInstace= await instanciaModel.findByInstanceName(this.instance)
+    //     const user = await userModel.findById(userInstace.userId)
+    //     const botExists = await botMessageModel.findByUserInstance(user.id, this.instance)
+    //     const userMessageStatus = await userMessageStatusModel.findByUserAndInstance(user.id, this.instance)
         
-        if(!userInstace.numero || userInstace.numero !== ''){
-            await instanciaModel.update(user.id, this.instance, {
-                numero: this.sender,
-                baseCode: ''
-            })
-        }
+    //     if(!userInstace.numero || userInstace.numero !== ''){
+    //         await instanciaModel.update(user.id, this.instance, {
+    //             numero: this.sender,
+    //             baseCode: ''
+    //         })
+    //     }
         
-        if(!botExists){
-            await botMessageModel.create({
-                userId: user.id,
-                instanceName: this.instance
-            })
-            Logs.success('WebhookMsgUpsert',`Bot criado com sucesso para o usuário ${user.id}`) 
-        }
+    //     if(!botExists){
+    //         await botMessageModel.create({
+    //             userId: user.id,
+    //             instanceName: this.instance
+    //         })
+    //         Logs.success('WebhookMsgUpsert',`Bot criado com sucesso para o usuário ${user.id}`) 
+    //     }
 
-        if(!userMessageStatus){
-            await userMessageStatusModel.create({
-                userId: user.id,
-                instanceName: this.instance,
-                number: this.remoteJid,
-            })
-            Logs.success('WebhookMsgUpsert',`Status do bot criado com sucesso para o usuário ${user.id}`)
-        }
-        return user        
-    }
+    //     if(!userMessageStatus){
+    //         await userMessageStatusModel.create({
+    //             userId: user.id,
+    //             instanceName: this.instance,
+    //             number: this.remoteJid,
+    //         })
+    //         Logs.success('WebhookMsgUpsert',`Status do bot criado com sucesso para o usuário ${user.id}`)
+    //     }
+    //     return user        
+    // }
 }
