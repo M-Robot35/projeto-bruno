@@ -57,7 +57,7 @@ export function CtaSection() {
               size="lg"
               className="group relative overflow-hidden bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300"
             >
-              <span className="relative z-10">Experimente grátis por 14 dias</span>
+              <span className="relative z-10">Experimente grátis por 3 dias</span>
               <ArrowRight className="relative z-10 ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-emerald-600 to-emerald-700 opacity-0 transition-opacity group-hover:opacity-100"></div>
             </Button>
