@@ -2,6 +2,12 @@
 
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar"
+
 
 export function TestimonialSection() {
   const [isVisible, setIsVisible] = useState(false)
@@ -39,9 +45,8 @@ export function TestimonialSection() {
 
       <div className="container px-4 md:px-6 relative">
         <div
-          className={`flex flex-col items-center justify-center space-y-4 text-center transition-all duration-700 ${
-            isVisible ? "opacity-100" : "opacity-0 translate-y-10"
-          }`}
+          className={`flex flex-col items-center justify-center space-y-4 text-center transition-all duration-700 ${isVisible ? "opacity-100" : "opacity-0 translate-y-10"
+            }`}
         >
           <div className="space-y-2">
             <div className="inline-block rounded-lg bg-emerald-100 px-3 py-1 text-sm text-emerald-700">Depoimentos</div>
@@ -62,7 +67,7 @@ export function TestimonialSection() {
             },
             {
               content:
-                "O chatbot inteligente do Zapqi qualifica nossos leads antes mesmo de chegarem aos vendedores. Isso aumentou nossa taxa de conversão em 25% no primeiro mês.",
+                "O chatbot inteligente do Zapqi qualifica nossos produtos antes mesmo de chegarem aos vendedores. Isso aumentou nossa taxa de conversão em 25% no primeiro mês.",
               author: "Carlos Mendes",
               role: "Diretor Comercial, Tech Solutions",
               delay: 200,
@@ -77,15 +82,15 @@ export function TestimonialSection() {
           ].map((testimonial, index) => (
             <div
               key={index}
-              ref={(el) => (testimonialRefs.current[index] = el)}
-              className={`group flex flex-col justify-between rounded-xl border p-6 transition-all duration-500 hover:border-emerald-200 hover:bg-emerald-50/50 hover:shadow-md ${
-                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-              }`}
+              // ref={(el) => (testimonialRefs.current[index] = el)}
+              className={`group flex flex-col justify-between rounded-xl border p-6 transition-all duration-500 hover:border-emerald-200 hover:bg-emerald-50/50 hover:shadow-md ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                }`}
               style={{ transitionDelay: `${testimonial.delay}ms` }}
             >
               <div className="space-y-4">
                 <div className="flex space-x-0.5">
                   {[...Array(5)].map((_, i) => (
+
                     <svg
                       key={i}
                       className="h-5 w-5 fill-emerald-500 transition-transform duration-300 group-hover:scale-110"
@@ -94,6 +99,8 @@ export function TestimonialSection() {
                     >
                       <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
                     </svg>
+
+
                   ))}
                 </div>
                 <p className="text-muted-foreground">{testimonial.content}</p>
@@ -101,12 +108,17 @@ export function TestimonialSection() {
               <div className="mt-6 flex items-center space-x-3">
                 <div className="relative h-10 w-10 overflow-hidden rounded-full bg-muted">
                   <Image
-                    src="/placeholder.svg?height=40&width=40"
+                    src="/Up.jpg?height=40&width=40"
                     width={40}
                     height={40}
                     alt={`Avatar de ${testimonial.author}`}
                     className="object-cover transition-transform duration-300 group-hover:scale-110"
                   />
+
+                  {/* <Avatar>
+                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar> */}
                 </div>
                 <div>
                   <p className="text-sm font-medium">{testimonial.author}</p>

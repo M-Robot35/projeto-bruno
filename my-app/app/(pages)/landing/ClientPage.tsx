@@ -73,9 +73,13 @@ export default function ClientLandingPage() {
           </div>
           <div className="flex flex-1 items-center justify-end space-x-4">
             <nav className="hidden items-center space-x-2 md:flex">
+            <Link href=" auth/login" passHref>           
               <Button variant="ghost" size="sm">
                 Entrar
               </Button>
+              </Link>
+
+              <Link href="/auth/register" passHref>
               <Button
                 size="sm"
                 className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300"
@@ -83,6 +87,7 @@ export default function ClientLandingPage() {
                 Começar agora
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
+              </Link>              
             </nav>
             <Button
               variant="ghost"
@@ -119,10 +124,15 @@ export default function ClientLandingPage() {
                 <Button variant="outline" size="sm">
                   Entrar
                 </Button>
+
+                <Link href="/auth/register" passHref>
                 <Button size="sm" className="bg-gradient-to-r from-emerald-500 to-emerald-600">
                   Começar agora
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
+                </Link>
+
+
               </div>
             </nav>
           </div>

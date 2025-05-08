@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export function PricingSection() {
   const [isVisible, setIsVisible] = useState(false)
@@ -40,9 +41,8 @@ export function PricingSection() {
 
       <div className="container px-4 md:px-6 relative">
         <div
-          className={`flex flex-col items-center justify-center space-y-4 text-center transition-all duration-700 ${
-            isVisible ? "opacity-100" : "opacity-0 translate-y-10"
-          }`}
+          className={`flex flex-col items-center justify-center space-y-4 text-center transition-all duration-700 ${isVisible ? "opacity-100" : "opacity-0 translate-y-10"
+            }`}
         >
           <div className="space-y-2">
             <div className="inline-block rounded-lg bg-emerald-100 px-3 py-1 text-sm text-emerald-700">Preços</div>
@@ -59,8 +59,8 @@ export function PricingSection() {
             {
               title: "Iniciante",
               subtitle: "Ideal para pequenas empresas",
-              price: "R$97",
-              features: ["1 número de WhatsApp", "Até 3 atendentes", "500 conversas/mês", "Chatbot básico"],
+              price: "R$350,00",
+              features: ["1 número de WhatsApp/Instância", "Suporte com IA*", "500 Tokens/Ia/mês", "Chatbot básico"],
               cta: "Começar agora",
               popular: false,
               delay: 100,
@@ -68,14 +68,15 @@ export function PricingSection() {
             {
               title: "Profissional",
               subtitle: "Para empresas em crescimento",
-              price: "R$197",
+              price: "R$500,00",
               features: [
-                "3 números de WhatsApp",
-                "Até 10 atendentes",
-                "2.000 conversas/mês",
-                "Chatbot avançado",
-                "Relatórios completos",
-                "Integrações com CRM",
+                "3 números de WhatsApp/Instâncias",
+                "Suporte com IA*",
+                "2.000 Tokens/IA/mês",
+                "Chatbot avançado"
+
+
+
               ],
               cta: "Começar agora",
               popular: true,
@@ -84,14 +85,13 @@ export function PricingSection() {
             {
               title: "Empresarial",
               subtitle: "Para grandes operações",
-              price: "R$497",
+              price: "R$750,00",
               features: [
-                "10 números de WhatsApp",
-                "Atendentes ilimitados",
-                "Conversas ilimitadas",
-                "Chatbot com IA avançada",
-                "API completa",
-                "Gerente de sucesso dedicado",
+                "10 números de WhatsApp/Instâncias",
+                "Suporte ilimitado IA* / Humanizado*",
+                "Tokens ilimitados",
+                "Chatbot com IA avançada"
+
               ],
               cta: "Falar com vendas",
               popular: false,
@@ -100,12 +100,11 @@ export function PricingSection() {
           ].map((plan, index) => (
             <div
               key={index}
-              ref={(el) => (planRefs.current[index] = el)}
-              className={`flex flex-col rounded-xl ${
-                plan.popular
+              // ref={(el) => (planRefs.current[index] = el)}
+              className={`flex flex-col rounded-xl ${plan.popular
                   ? "relative border-2 border-emerald-200 bg-gradient-to-b from-emerald-50 to-white p-6 shadow-xl"
                   : "border p-6 hover:border-emerald-200 hover:shadow-md"
-              } transition-all duration-500 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+                } transition-all duration-500 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
               style={{ transitionDelay: `${plan.delay}ms` }}
             >
               {plan.popular && (
@@ -129,16 +128,19 @@ export function PricingSection() {
                   </li>
                 ))}
               </ul>
-              <Button
-                className={`mt-8 group relative overflow-hidden ${
-                  plan.popular
-                    ? "bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700"
-                    : "bg-emerald-600 hover:bg-emerald-700"
-                } transition-all duration-300`}
-              >
-                <span className="relative z-10">{plan.cta}</span>
-                <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-emerald-600 to-emerald-700 opacity-0 transition-opacity group-hover:opacity-100"></div>
-              </Button>
+
+              <Link href="https://wa.me/31985019300?text=Quero%adquirir%20um%plano" target="_blank" rel="noopener noreferrer" passHref>
+                <Button
+                  className={`mt-8 group relative overflow-hidden ${plan.popular
+                      ? "bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700"
+                      : "bg-emerald-600 hover:bg-emerald-700"
+                    } transition-all duration-300`}
+                >
+                  <span className="relative z-10">{plan.cta}</span>
+                  <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-emerald-600 to-emerald-700 opacity-0 transition-opacity group-hover:opacity-100"></div>
+                </Button>
+              </Link>
+
             </div>
           ))}
         </div>
