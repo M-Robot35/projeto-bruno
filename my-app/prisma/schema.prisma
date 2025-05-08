@@ -121,7 +121,7 @@ model Bot {
   updatedAt DateTime @updatedAt
 
   prompts   Prompt[]
-  instancia Instancia @relation(fields: [instanceId], references: [id])
+  instancia Instancia @relation(fields: [instanceId], references: [id], onDelete: Cascade)
   triggers  Trigger[]
   logs      BotLog[]
   Schedule  Schedule?
@@ -135,7 +135,7 @@ model BotLog {
   type      LogType
   createdAt DateTime @default(now())
 
-  bot Bot @relation(fields: [botId], references: [id])
+  bot Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
 }
 
 enum LogType {
@@ -148,11 +148,12 @@ enum LogType {
 model Prompt {
   id        String   @id @default(cuid())
   title     String
+  isActive  Boolean @default(false)
   content   String // texto do prompt
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   botId     String
-  bot       Bot      @relation(fields: [botId], references: [id])
+  bot       Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
 }
 
 model Schedule {
@@ -171,7 +172,7 @@ model Trigger {
   order    Int? // ordem no fluxo, se for um chatbot sequencial
   isActive Boolean @default(true)
 
-  bot Bot @relation(fields: [botId], references: [id])
+  bot Bot @relation(fields: [botId], references: [id], onDelete: Cascade)
 }
 
 enum BotStatus {

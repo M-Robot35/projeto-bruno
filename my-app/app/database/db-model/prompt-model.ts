@@ -8,6 +8,7 @@ export type PromptCreateType = {
     title: string;
     content: string;
     botId: string;
+    isActive: boolean
 };
 
 class PromptModel {

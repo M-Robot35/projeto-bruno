@@ -9,8 +9,8 @@ export type inputType = {
     name: string;
     description?: string;
     instanceId: string;
-    status: string;
-    autoStart: boolean;
+    status?: "ATIVO"|"PAUSADO"|"DESATIVADO"|"AGENDADO"|"ERRO";
+    autoStart?: boolean;
     startTime?: Date;
     stopTime?: Date;
 };
@@ -49,7 +49,7 @@ class BotModel {
         return execute;
     }
 
-    async findByName(name: string): Promise<outputType | null> {
+    async findByName(name: string): Promise<outputType | null> { 
         try {
             const execute = await this.database.findFirst({
                 where: { name }
@@ -62,6 +62,50 @@ class BotModel {
         } catch (error) {
             Logs.error('database findByName', `Erro ao buscar o bot com o nome [ ${name} ]: ${error}`);
             return null;
+        }
+    }
+    async update(id: string, data: Partial<BotCreateType>): Promise<outputType | null> {
+        try {
+            const existingBot = await this.database.findFirst({
+                where: { id }
+            });
+
+            if (!existingBot) {
+                Logs.error('database update', `O bot com o ID [ ${id} ] não existe`);
+                return null;
+            }
+
+            const updatedBot = await this.database.update({
+                where: { id },
+                data: { ...data }
+            });
+
+            return updatedBot;
+        } catch (error) {
+            Logs.error('database update', `Erro ao atualizar o bot com o ID [ ${id} ]: ${error}`);
+            return null;
+        }
+    }
+
+    async delete(id: string): Promise<boolean> {
+        try {
+            const existingBot = await this.database.findFirst({
+                where: { id }
+            });
+
+            if (!existingBot) {
+                Logs.error('database delete', `O bot com o ID [ ${id} ] não existe`);
+                return false;
+            }
+
+            await this.database.delete({
+                where: { id }
+            });
+
+            return true;
+        } catch (error) {
+            Logs.error('database delete', `Erro ao deletar o bot com o ID [ ${id} ]: ${error}`);
+            return false;
         }
     }
 }

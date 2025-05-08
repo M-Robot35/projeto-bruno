@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:latest
 
 ENV TZ=America/Sao_Paulo
 
@@ -12,7 +12,7 @@ RUN dpkg-reconfigure --frontend noninteractive tzdata
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+RUN npm install --force
 
 COPY . .
 RUN npm run build

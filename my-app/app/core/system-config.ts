@@ -10,6 +10,8 @@ export const Env ={
     "NEXTAUTH_SECRET": process.env.NEXTAUTH_SECRET?? '',
     "WEBSOCKET_CLIENT_URL": process.env.WEBSOCKET_CLIENT_URL?? null,
     "WEBSOCKET_CLIENT_DELAY_RECONNECT": Number(process.env.WEBSOCKET_CLIENT_DELAY_RECONNECT)?? null,
+    
+    "SKIP_DB": process.env.SKIP_DB ? (process.env.SKIP_DB.toLowerCase() == 'true') : false    
 }
 
 

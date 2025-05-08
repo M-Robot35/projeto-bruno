@@ -1,5 +1,25 @@
 version: '3.9'
 services:
+  app:
+    image: whatsapp
+    container_name: app
+    environment:
+      - SKIP_DB=false  #skipar o BD para fazer a build da imagem docker
+      - AUTH_SECRET="BoySsEeu0SFtpZKBUVg9omevcSHlfyxzhc3JdhMOZ4U="
+
+      - DATABASE_URL=postgresql://postgres:parangarito12@db:5432/bruno
+
+      # NextAuth
+      - NEXTAUTH_URL=http://localhost:3000 # mudar para o dominio que irá usar
+      - NEXTAUTH_URL_INTERNAL=http://localhost:3000 # não sei se e esse ou o de baixo
+      - NEXTAUTH_SECRET='klfdjalreyhwpowhbjghjsarlkjrwghrw'
+
+      # Evolution
+      - EVOLUTION_URL=http://evolution-api:8080
+      - EVOLUTION_APIKEY=minhasenhasecreta  
+    ports:
+      - 3000:3000
+
 
   # EVOLTION API ====================================
   evolution-api:

@@ -8,7 +8,7 @@ export type inputType = {
     id: string;
     botId: string;
     message: string;
-    type: string;
+    type: 'INFO'|'WARNING'|'ERROR'|'SUCCESS' ;
     createdAt: Date;
 };
 

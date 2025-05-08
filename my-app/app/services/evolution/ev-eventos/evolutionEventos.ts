@@ -49,6 +49,28 @@ export type TypeEventsName=
 |"MESSAGE_POLL"
 export const eventsEvolution= new EventDefault<TypeEventsName>()
 
+// Cria o 
+eventsEvolution.on('INSTANCIA_CRIAR', async ( event:typeDataInstance<InstanceCreateEvolution> )=>{  
+    const { success, message, data }= event
+    if(!success){
+        Logs.error('INSTANCIA_CRIAR', message)
+        return
+    }
+    const {id}= await sessionUserAction()
+    const { hash, qrcode, settings, rabbitmq, ...rest }= data
+
+    // salva a instancia do usuario no BD
+    const save= await instanciaModel.create({
+        userId:id,
+        hash:rest.instance.instanceId,
+        instanciaName:rest.instance.instanceName,
+        numero:'',
+        baseCode:'',
+        statusConnection:rest.instance.status
+    })
+})
+
+
 eventsEvolution.on('INSTANCIA_CRIAR', async ( event:typeDataInstance<InstanceCreateEvolution> )=>{  
     const { success, message, data }= event
     if(!success){

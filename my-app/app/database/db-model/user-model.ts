@@ -1,6 +1,7 @@
 import { User } from "@prisma/client";
 import { prismaConnect } from "../db-connect"
 import { Logs } from "@/app/core/logs";
+import { Env } from "@/app/core/system-config";
 
 export type user= {
     id: string;
@@ -60,7 +61,9 @@ class UserModel {
     }
 
     async all(): Promise<User[]>
-    {
+    {   
+        if(Env.SKIP_DB) return [] // passar para não atrapalhar a fazer a imagem docker
+
         const execute= await this.database.findMany()
         return execute
     }
