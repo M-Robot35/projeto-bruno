@@ -11,10 +11,13 @@ import { PricingSection } from "@/components/landing/landing-pricing-section"
 import { TestimonialSection } from "@/components/landing/landing-testimonial-section"
 import { CtaSection } from "@/components/landing/landing-cta-section"
 import { Footer } from "@/components/landing/landing-footer"
+import { Sun, Moon } from "lucide-react"
+import { useTheme } from "next-themes"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export default function ClientLandingPage() {
+  const { resolvedTheme, setTheme } = useTheme()
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -38,9 +41,8 @@ export default function ClientLandingPage() {
   return (
     <main className="flex min-h-screen flex-col">
       <header
-        className={`sticky top-0 z-40 w-full transition-all duration-300 ${
-          isScrolled ? "border-b bg-background/80 backdrop-blur-md" : "bg-transparent"
-        }`}
+        className={`sticky top-0 z-40 w-full transition-all duration-300 ${isScrolled ? "border-b bg-background/80 backdrop-blur-md" : "bg-transparent"
+          }`}
       >
         <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
           <div className="flex gap-6 md:gap-10">
@@ -72,22 +74,30 @@ export default function ClientLandingPage() {
             </nav>
           </div>
           <div className="flex flex-1 items-center justify-end space-x-4">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+              aria-label="Alternar tema"
+            >
+              {resolvedTheme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
             <nav className="hidden items-center space-x-2 md:flex">
-            <Link href=" auth/login" passHref>           
-              <Button variant="ghost" size="sm">
-                Entrar
-              </Button>
+              <Link href=" auth/login" passHref>
+                <Button variant="ghost" size="sm">
+                  Entrar
+                </Button>
               </Link>
 
               <Link href="/auth/register" passHref>
-              <Button
-                size="sm"
-                className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300"
-              >
-                Começar agora
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-              </Link>              
+                <Button
+                  size="sm"
+                  className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300"
+                >
+                  Começar agora
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
             </nav>
             <Button
               variant="ghost"
@@ -126,10 +136,10 @@ export default function ClientLandingPage() {
                 </Button>
 
                 <Link href="/auth/register" passHref>
-                <Button size="sm" className="bg-gradient-to-r from-emerald-500 to-emerald-600">
-                  Começar agora
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                  <Button size="sm" className="bg-gradient-to-r from-emerald-500 to-emerald-600">
+                    Começar agora
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
                 </Link>
 
 

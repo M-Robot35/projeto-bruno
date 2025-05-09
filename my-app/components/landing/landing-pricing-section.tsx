@@ -3,12 +3,14 @@
 import { useEffect, useRef, useState } from "react"
 import { CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useTheme } from "next-themes"
 import Link from "next/link"
 
 export function PricingSection() {
   const [isVisible, setIsVisible] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
   const planRefs = useRef<(HTMLDivElement | null)[]>([])
+  const { theme } = useTheme()
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -35,9 +37,9 @@ export function PricingSection() {
   return (
     <section id="pricing" ref={sectionRef} className="relative w-full py-12 md:py-24 lg:py-32 overflow-hidden">
       {/* Background elements */}
-      <div className="absolute inset-0 bg-grid opacity-30"></div>
-      <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-emerald-200 opacity-20 blur-3xl"></div>
-      <div className="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-emerald-200 opacity-20 blur-3xl"></div>
+      <div className="absolute inset-0 bg-grid dark:bg-grid-dark opacity-30"></div>
+      <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-emerald-200 dark:bg-emerald-900 opacity-20 blur-3xl"></div>
+      <div className="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-emerald-200 dark:bg-emerald-900 opacity-20 blur-3xl"></div>
 
       <div className="container px-4 md:px-6 relative">
         <div
@@ -45,7 +47,9 @@ export function PricingSection() {
             }`}
         >
           <div className="space-y-2">
-            <div className="inline-block rounded-lg bg-emerald-100 px-3 py-1 text-sm text-emerald-700">Preços</div>
+            <div className="inline-block rounded-lg bg-emerald-100 dark:bg-emerald-900/50 px-3 py-1 text-sm text-emerald-700 dark:text-emerald-300">
+              Preços
+            </div>
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
               Planos que crescem com seu negócio
             </h2>
@@ -74,9 +78,6 @@ export function PricingSection() {
                 "Suporte com IA*",
                 "2.000 Tokens/IA/mês",
                 "Chatbot avançado"
-
-
-
               ],
               cta: "Começar agora",
               popular: true,
@@ -91,7 +92,6 @@ export function PricingSection() {
                 "Suporte ilimitado IA* / Humanizado*",
                 "Tokens ilimitados",
                 "Chatbot com IA avançada"
-
               ],
               cta: "Falar com vendas",
               popular: false,
@@ -102,13 +102,13 @@ export function PricingSection() {
               key={index}
               // ref={(el) => (planRefs.current[index] = el)}
               className={`flex flex-col rounded-xl ${plan.popular
-                  ? "relative border-2 border-emerald-200 bg-gradient-to-b from-emerald-50 to-white p-6 shadow-xl"
-                  : "border p-6 hover:border-emerald-200 hover:shadow-md"
+                  ? "relative border-2 border-emerald-200 dark:border-emerald-700 bg-gradient-to-b from-emerald-50 to-white dark:from-emerald-900/20 dark:to-background p-6 shadow-xl"
+                  : "border dark:border-border p-6 hover:border-emerald-200 dark:hover:border-emerald-700 hover:shadow-md"
                 } transition-all duration-500 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
               style={{ transitionDelay: `${plan.delay}ms` }}
             >
               {plan.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-emerald-100 dark:bg-emerald-800 px-3 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-300">
                   Mais popular
                 </div>
               )}
@@ -123,24 +123,22 @@ export function PricingSection() {
               <ul className="mt-6 space-y-3">
                 {plan.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-center">
-                    <CheckCircle className="mr-2 h-4 w-4 text-emerald-500" />
+                    <CheckCircle className="mr-2 h-4 w-4 text-emerald-500 dark:text-emerald-400" />
                     <span>{feature}</span>
                   </li>
                 ))}
               </ul>
-
               <Link href="https://wa.me/31985019300?text=Quero%adquirir%20um%plano" target="_blank" rel="noopener noreferrer" passHref>
                 <Button
                   className={`mt-8 group relative overflow-hidden ${plan.popular
-                      ? "bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700"
-                      : "bg-emerald-600 hover:bg-emerald-700"
+                      ? "bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 dark:from-emerald-600 dark:to-emerald-700 dark:hover:from-emerald-500 dark:hover:to-emerald-600"
+                      : "bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-600"
                     } transition-all duration-300`}
                 >
                   <span className="relative z-10">{plan.cta}</span>
-                  <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-emerald-600 to-emerald-700 opacity-0 transition-opacity group-hover:opacity-100"></div>
+                  <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-emerald-600 to-emerald-700 dark:from-emerald-500 dark:to-emerald-600 opacity-0 transition-opacity group-hover:opacity-100"></div>
                 </Button>
               </Link>
-
             </div>
           ))}
         </div>
