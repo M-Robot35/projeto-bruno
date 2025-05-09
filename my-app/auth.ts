@@ -72,6 +72,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   
   // Permitir localhost como host confiável
-  
+  trustHost:true,
   secret: process.env.NEXTAUTH_SECRET
 })
