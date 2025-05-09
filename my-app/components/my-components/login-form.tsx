@@ -23,7 +23,7 @@ export default function LoginForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-  
+    
     try {
       const result = await signIn("credentials", {
         email,
@@ -31,12 +31,13 @@ export default function LoginForm() {
         redirect: false
         }
       );
+      
 
       if (result && result.error) {
         toast.error('Login ou senha inválidos');
         return
       }
-
+     
       toast.success("Logged in successfully!");
       route.replace(config.pathLoginSuccess)
 

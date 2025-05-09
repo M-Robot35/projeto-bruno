@@ -2,6 +2,7 @@ import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import AuthorizeUser from "./app/actions/authorizeUserAction"
 import z from 'zod'
+import { Env } from "./app/core/system-config"
 
 const signInSchema = z.object({
     email: z.string({ required_error: "Por favor, informe seu e-mail." })
@@ -19,13 +20,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers:[
     Credentials({
       credentials: {
-        email: {type:'email'},
-        password: {type:'password'},
+        email: { label: "email", type: "email" },
+        password: { label: "password", type: "password" }
       },
 
-      authorize: async (credentials) => {        
+      authorize: async (credentials) => { 
         const check = await signInSchema.safeParse(credentials)
-
+        
         if(!check.success) return null        
 
         return await AuthorizeUser({...check.data} as any)        
@@ -47,7 +48,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return null; 
       }
       return token;
-    },
+    },   
     
     async session({ session, token }: any) {
       if (Object.keys(token).length === 0) {
@@ -69,7 +70,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signOut: "/auth/login",
     error: "/"
   },
+  
   // Permitir localhost como host confiável
-  trustHost: true,
+  
   secret: process.env.NEXTAUTH_SECRET
 })

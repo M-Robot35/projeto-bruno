@@ -9,15 +9,12 @@ type TypeAuthorizeUser={
 
 export default async function AuthorizeUser(userData: TypeAuthorizeUser):Promise<user|null> {
     const {email, password}= userData
-    
     try{
         const getUser= await userModel.findByEmail(email)    
         if (!getUser) return null
-
         const pwHash = await bcriptHash.compare(password, getUser.password) 
 
         if (!pwHash ) return null
-
         return getUser
     }catch(error){
         return null

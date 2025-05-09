@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const Env ={
+    "NODE_ENV": process.env.NODE_ENV,  // production ou development
     "NEXTAUTH_URL_INTERNAL": process.env.NEXTAUTH_URL_INTERNAL?? null,
     "NEXTAUTH_URL": process.env.NEXTAUTH_URL?? null,
     "AUTH_SECRET": process.env.AUTH_SECRET?? null,
@@ -11,9 +12,10 @@ export const Env ={
     "WEBSOCKET_CLIENT_URL": process.env.WEBSOCKET_CLIENT_URL?? null,
     "WEBSOCKET_CLIENT_DELAY_RECONNECT": Number(process.env.WEBSOCKET_CLIENT_DELAY_RECONNECT)?? null,
     
-    "SKIP_DB": process.env.SKIP_DB ? (process.env.SKIP_DB.toLowerCase() == 'true') : false    
-}
+    "SKIP_DB": process.env.SKIP_DB ? (process.env.SKIP_DB.toLowerCase() == 'true') : false,
+    "TRUST_HOST": process.env.TRUST_HOST ? (process.env.TRUST_HOST.toLowerCase() === 'true') : false
 
+}
 
 export const configSystem = {
     system: {

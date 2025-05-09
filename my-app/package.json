@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "zapqi_ai_bot",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,8 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "hub-tag": "sh -c 'chmod 777 src/core/scripts/docker/switchTag.sh && ./src/core/scripts/docker/switchTag.sh'"
-
+    "docker-build": "sh -c 'chmod 777 ./scripts/docker/build.sh && ./scripts/docker/build.sh'",
+    "hub-tag": "sh -c 'chmod 777 ./scripts/docker/switchTag.sh && ./scripts/docker/switchTag.sh'",
+    "docker-deploy": "npm run docker-build && npm run hub-tag"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.8.0",

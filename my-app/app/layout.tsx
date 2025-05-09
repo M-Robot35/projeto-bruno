@@ -3,6 +3,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { AuthProvider } from "@/components/ui/AuthProvider";
 import { frontConstants } from "./core/constants/front-constants";
+
 const {
   dataTitle,
   dataAutors,
