@@ -49,7 +49,7 @@ export function CtaSection() {
               Pronto para transformar seu atendimento via WhatsApp?
             </h2>
             <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Comece hoje mesmo e veja a diferença que o Zapqi pode fazer para seu negócio.
+              Comece hoje mesmo e veja a diferença que o ZapQI pode fazer para seu negócio.
             </p>
           </div>
           <div className="flex flex-col gap-2 min-[400px]:flex-row">

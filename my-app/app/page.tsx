@@ -7,7 +7,7 @@ import ClientLandingPage from "../app/(pages)/landing/ClientPage"
 const inter = Inter({ subsets: ["latin"] })
 // Metadados da página
 export const metadata = {
-  title: "Zapqi - Atendimento via WhatsApp simplificado para sua empresa",
+  title: "ZapQI - Atendimento via WhatsApp simplificado para sua empresa",
   description:
     "Gerencie todas as suas conversas do WhatsApp em um só lugar. Aumente a satisfação dos clientes e impulsione suas vendas.",
 }

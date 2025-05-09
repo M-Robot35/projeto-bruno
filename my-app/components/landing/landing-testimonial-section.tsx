@@ -52,7 +52,7 @@ export function TestimonialSection() {
             <div className="inline-block rounded-lg bg-emerald-100 px-3 py-1 text-sm text-emerald-700">Depoimentos</div>
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">O que nossos clientes dizem</h2>
             <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Veja como o Zapqi está transformando o atendimento ao cliente de empresas como a sua.
+              Veja como o ZapQI está transformando o atendimento ao cliente de empresas como a sua.
             </p>
           </div>
         </div>
@@ -60,21 +60,21 @@ export function TestimonialSection() {
           {[
             {
               content:
-                "Desde que implementamos o Zapqi, nosso tempo de resposta caiu pela metade e a satisfação dos clientes aumentou em 40%. Uma ferramenta essencial para nosso negócio.",
+                "Desde que implementamos o ZapQI, nosso tempo de resposta caiu pela metade e a satisfação dos clientes aumentou em 40%. Uma ferramenta essencial para nosso negócio.",
               author: "Ana Silva",
               role: "Gerente de Atendimento, Loja Virtual XYZ",
               delay: 100,
             },
             {
               content:
-                "O chatbot inteligente do Zapqi qualifica nossos produtos antes mesmo de chegarem aos vendedores. Isso aumentou nossa taxa de conversão em 25% no primeiro mês.",
+                "O chatbot inteligente do ZapQI qualifica nossos produtos antes mesmo de chegarem aos vendedores. Isso aumentou nossa taxa de conversão em 25% no primeiro mês.",
               author: "Carlos Mendes",
               role: "Diretor Comercial, Tech Solutions",
               delay: 200,
             },
             {
               content:
-                "Como pequena empresa, precisávamos de uma solução que não exigisse uma equipe grande. O Zapqi nos permitiu automatizar 70% das interações iniciais com clientes.",
+                "Como pequena empresa, precisávamos de uma solução que não exigisse uma equipe grande. O ZapQI nos permitiu automatizar 70% das interações iniciais com clientes.",
               author: "Mariana Costa",
               role: "Proprietária, Boutique Elegance",
               delay: 300,

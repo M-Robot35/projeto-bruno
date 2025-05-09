@@ -45,10 +45,10 @@ export function Footer() {
             <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-md transition-transform duration-300 group-hover:scale-110">
               <MessageSquare className="h-4 w-4 text-white" />
             </div>
-            <span className="inline-block font-bold">Zapqi</span>
+            <span className="inline-block font-bold">ZapQI</span>
           </Link>
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-            &copy; {new Date().getFullYear()} Zapqi. Todos os direitos reservados.
+            &copy; {new Date().getFullYear()} ZapQI. Todos os direitos reservados.
           </p>
         </div>
         <div className="flex gap-4">

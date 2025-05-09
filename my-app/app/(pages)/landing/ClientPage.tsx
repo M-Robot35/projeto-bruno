@@ -48,7 +48,7 @@ export default function ClientLandingPage() {
               <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-md">
                 <MessageSquare className="h-4 w-4 text-white" />
               </div>
-              <span className="inline-block font-bold">Zapqi</span>
+              <span className="inline-block font-bold">ZapQI</span>
             </Link>
             <nav className="hidden gap-6 md:flex">
               <button
