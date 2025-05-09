@@ -89,23 +89,23 @@ export function FeatureSection() {
             {
               icon: <Users className="h-6 w-6 text-emerald-700" />,
               title: "Múltiplos Atendentes",
-              description: "Distribua conversas entre sua equipe e acompanhe o desempenho de cada atendente.",
+              description: "Não deixe seus clientes esperando, nosso sistema tem multi-atendimento.",
             },
             {
               icon: <Bot className="h-6 w-6 text-emerald-700" />,
               title: "Chatbot Inteligente",
               description:
-                "Automatize respostas para perguntas frequentes e qualifique leads antes do atendimento humano.",
+                "Automatize suas vendas com Ia inteligente, agregando tempo e qualidade aos seus produtos.",
             },
             {
               icon: <BarChart className="h-6 w-6 text-emerald-700" />,
-              title: "Relatórios Detalhados",
+              title: "Poupe Tempo e Reduza Custos",
               description: "Acompanhe métricas importantes como tempo de resposta, satisfação do cliente e conversão.",
             },
             {
               icon: <Clock className="h-6 w-6 text-emerald-700" />,
-              title: "Mensagens Programadas",
-              description: "Agende mensagens para envio automático em datas e horários específicos.",
+              title: "Mensagens Monitoradas Por Você",
+              description: "Monitore as mensagens enviadas pelo bot e assuma o controle quando quiser.",
             },
             {
               icon: <Shield className="h-6 w-6 text-emerald-700" />,
