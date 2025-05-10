@@ -61,7 +61,7 @@ export function CtaSection() {
 
       <div className="container relative px-4 md:px-6">
         <div
-          className={`flex flex-col items-center justify-center space-y-4 text-center transition-all duration-700 ${
+          className={`flex flex-col items-center justify-center space-y-4 text-center transition-all duration-700  ${
             isVisible ? "opacity-100" : "opacity-0 translate-y-10"
           }`}
         >
