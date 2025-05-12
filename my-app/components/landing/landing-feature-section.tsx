@@ -1,18 +1,39 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { MessageSquare, Users, BarChart, Shield, Bot, Clock } from "lucide-react"
+
+type Blob = {
+  width: number
+  height: number
+  top: number
+  left: number
+  duration: number
+  delay: number
+}
 
 export function FeatureSection() {
   const sectionRef = useRef<HTMLDivElement>(null)
   const featureRefs = useRef<(HTMLDivElement | null)[]>([])
+  const [backgroundBlobs, setBackgroundBlobs] = useState<Blob[]>([])
+
+  useEffect(() => {
+    const blobs = Array.from({ length: 5 }).map(() => ({
+      width: Math.random() * 300 + 100,
+      height: Math.random() * 300 + 100,
+      top: Math.random() * 100,
+      left: Math.random() * 100,
+      duration: Math.random() * 10 + 10,
+      delay: Math.random() * 5,
+    }))
+    setBackgroundBlobs(blobs)
+  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // Adicionar a classe animate-fade-in e remover opacity-0
             entry.target.classList.add("animate-fade-in")
             entry.target.classList.remove("opacity-0")
             observer.unobserve(entry.target)
@@ -22,23 +43,47 @@ export function FeatureSection() {
       { threshold: 0.1, rootMargin: "0px 0px -100px 0px" },
     )
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current)
-    }
-
-    featureRefs.current.forEach((ref) => {
-      if (ref) observer.observe(ref)
-    })
+    if (sectionRef.current) observer.observe(sectionRef.current)
+    featureRefs.current.forEach((ref) => ref && observer.observe(ref))
 
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current)
-      }
-      featureRefs.current.forEach((ref) => {
-        if (ref) observer.unobserve(ref)
-      })
+      if (sectionRef.current) observer.unobserve(sectionRef.current)
+      featureRefs.current.forEach((ref) => ref && observer.unobserve(ref))
     }
   }, [])
+
+  const features = [
+    {
+      icon: <MessageSquare className="h-6 w-6 text-emerald-700" />,
+      title: "Inbox Unificado",
+      description: "Gerencie todas as conversas de WhatsApp em uma única interface intuitiva.",
+    },
+    {
+      icon: <Users className="h-6 w-6 text-emerald-700" />,
+      title: "Múltiplos Atendentes",
+      description: "Não deixe seus clientes esperando, nosso sistema tem multi-atendimento.",
+    },
+    {
+      icon: <Bot className="h-6 w-6 text-emerald-700" />,
+      title: "Chatbot Inteligente",
+      description: "Automatize suas vendas com Ia inteligente, agregando tempo e qualidade aos seus produtos.",
+    },
+    {
+      icon: <BarChart className="h-6 w-6 text-emerald-700" />,
+      title: "Poupe Tempo e Reduza Custos",
+      description: "Acompanhe métricas importantes como tempo de resposta, satisfação do cliente e conversão.",
+    },
+    {
+      icon: <Clock className="h-6 w-6 text-emerald-700" />,
+      title: "Mensagens Monitoradas Por Você",
+      description: "Monitore as mensagens enviadas pelo bot e assuma o controle quando quiser.",
+    },
+    {
+      icon: <Shield className="h-6 w-6 text-emerald-700" />,
+      title: "Segurança Total",
+      description: "Criptografia de ponta a ponta e conformidade com LGPD para proteger os dados dos seus clientes.",
+    },
+  ]
 
   return (
     <section id="features" className="relative w-full py-12 md:py-24 lg:py-32 overflow-hidden">
@@ -47,23 +92,24 @@ export function FeatureSection() {
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/40 via-transparent to-emerald-50/40"></div>
         <div className="absolute inset-0 animate-pulse-slow"></div>
         <div className="absolute h-full w-full overflow-hidden">
-          {[...Array(5)].map((_, i) => (
+          {backgroundBlobs.map((blob, i) => (
             <div
               key={i}
               className="absolute rounded-full bg-emerald-300/10"
               style={{
-                width: `${Math.random() * 300 + 100}px`,
-                height: `${Math.random() * 300 + 100}px`,
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                animationDuration: `${Math.random() * 10 + 10}s`,
-                animationDelay: `${Math.random() * 5}s`,
+                width: `${blob.width}px`,
+                height: `${blob.height}px`,
+                top: `${blob.top}%`,
+                left: `${blob.left}%`,
+                animationDuration: `${blob.duration}s`,
+                animationDelay: `${blob.delay}s`,
                 transform: "translate(-50%, -50%)",
               }}
             />
           ))}
         </div>
       </div>
+
       <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-emerald-200 opacity-20 blur-3xl"></div>
       <div className="absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-emerald-200 opacity-20 blur-3xl"></div>
 
@@ -79,41 +125,9 @@ export function FeatureSection() {
             </p>
           </div>
         </div>
+
         <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 py-12 md:grid-cols-2 lg:grid-cols-3">
-          {[
-            {
-              icon: <MessageSquare className="h-6 w-6 text-emerald-700" />,
-              title: "Inbox Unificado",
-              description: "Gerencie todas as conversas de WhatsApp em uma única interface intuitiva.",
-            },
-            {
-              icon: <Users className="h-6 w-6 text-emerald-700" />,
-              title: "Múltiplos Atendentes",
-              description: "Não deixe seus clientes esperando, nosso sistema tem multi-atendimento.",
-            },
-            {
-              icon: <Bot className="h-6 w-6 text-emerald-700" />,
-              title: "Chatbot Inteligente",
-              description:
-                "Automatize suas vendas com Ia inteligente, agregando tempo e qualidade aos seus produtos.",
-            },
-            {
-              icon: <BarChart className="h-6 w-6 text-emerald-700" />,
-              title: "Poupe Tempo e Reduza Custos",
-              description: "Acompanhe métricas importantes como tempo de resposta, satisfação do cliente e conversão.",
-            },
-            {
-              icon: <Clock className="h-6 w-6 text-emerald-700" />,
-              title: "Mensagens Monitoradas Por Você",
-              description: "Monitore as mensagens enviadas pelo bot e assuma o controle quando quiser.",
-            },
-            {
-              icon: <Shield className="h-6 w-6 text-emerald-700" />,
-              title: "Segurança Total",
-              description:
-                "Criptografia de ponta a ponta e conformidade com LGPD para proteger os dados dos seus clientes.",
-            },
-          ].map((feature, index) => (
+          {features.map((feature, index) => (
             <div
               key={index}
               ref={(el) => (featureRefs.current[index] = el)}

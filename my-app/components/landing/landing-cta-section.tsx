@@ -8,10 +8,12 @@ import { useTheme } from "next-themes"
 
 export function CtaSection() {
   const [isVisible, setIsVisible] = useState(false)
+  const [isClient, setIsClient] = useState(false) // Adicionamos um estado para detectar quando estamos no cliente
   const sectionRef = useRef<HTMLElement>(null)
   const { resolvedTheme } = useTheme()
 
   useEffect(() => {
+    setIsClient(true) // Agora sabemos que estamos no cliente
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -19,7 +21,7 @@ export function CtaSection() {
           observer.unobserve(entry.target)
         }
       },
-      { threshold: 0.1 },
+      { threshold: 0.1 }
     )
 
     if (sectionRef.current) {
@@ -33,37 +35,25 @@ export function CtaSection() {
     }
   }, [])
 
+  if (!isClient) {
+    // Previne o erro de desidratação na renderização do servidor
+    return null
+  }
+
+  const backgroundClass = resolvedTheme === "dark" ? "bg-grid-dark" : "bg-gradient-to-br from-emerald-50 via-white to-emerald-50"
+  const blurClass = resolvedTheme === "dark" ? "bg-emerald-900" : "bg-emerald-200"
+
   return (
     <section ref={sectionRef} className="relative w-full py-12 md:py-24 lg:py-32 overflow-hidden">
       {/* Background adaptado ao tema */}
-      <div
-        className={`absolute inset-0 transition-colors duration-500 ${
-          resolvedTheme === "dark"
-            ? "bg-grid-dark"
-            : "bg-gradient-to-br from-emerald-50 via-white to-emerald-50"
-        }`}
-      />
-      <div
-        className={`absolute inset-0 opacity-30 transition-opacity duration-500 ${
-          resolvedTheme === "dark" ? "bg-grid-dark" : "bg-grid"
-        }`}
-      />
-      <div
-        className={`absolute -top-24 -left-24 h-96 w-96 rounded-full opacity-20 blur-3xl transition-colors duration-500 ${
-          resolvedTheme === "dark" ? "bg-emerald-900" : "bg-emerald-200"
-        }`}
-      />
-      <div
-        className={`absolute -bottom-24 -right-24 h-96 w-96 rounded-full opacity-20 blur-3xl transition-colors duration-500 ${
-          resolvedTheme === "dark" ? "bg-emerald-900" : "bg-emerald-200"
-        }`}
-      />
+      <div className={`absolute inset-0 transition-colors duration-500 ${backgroundClass}`} />
+      <div className={`absolute inset-0 opacity-30 transition-opacity duration-500 ${backgroundClass}`} />
+      <div className={`absolute -top-24 -left-24 h-96 w-96 rounded-full opacity-20 blur-3xl transition-colors duration-500 ${blurClass}`} />
+      <div className={`absolute -bottom-24 -right-24 h-96 w-96 rounded-full opacity-20 blur-3xl transition-colors duration-500 ${blurClass}`} />
 
       <div className="container relative px-4 md:px-6">
         <div
-          className={`flex flex-col items-center justify-center space-y-4 text-center transition-all duration-700  ${
-            isVisible ? "opacity-100" : "opacity-0 translate-y-10"
-          }`}
+          className={`flex flex-col items-center justify-center space-y-4 text-center transition-all duration-700 ${isVisible ? "opacity-100" : "opacity-0 translate-y-10"}`}
         >
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
