@@ -74,7 +74,7 @@ export default function ClientLandingPage() {
           isScrolled ? "border-b bg-background/80 backdrop-blur-md" : "bg-transparent"
         }`}
       >
-        <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
+        <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0 p-4">
           <div className="flex gap-6 md:gap-10">
             <Link href="/" className="flex items-center space-x-2">
               <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-md">
@@ -97,7 +97,7 @@ export default function ClientLandingPage() {
                 {resolvedTheme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </Button>
             )}
-            <nav className="hidden items-center space-x-2 md:flex">
+            <nav className="hidden items-center space-x-3 md:flex">
               <Link href="/auth/login">
                 <Button variant="ghost" size="sm">
                   Entrar
@@ -125,10 +125,10 @@ export default function ClientLandingPage() {
         </div>
 
         {mobileMenuOpen && (
-          <div className="container pb-4 md:hidden animate-fade-in">
-            <nav className="flex flex-col space-y-3">
+          <div className="container pb-4 md:hidden animate-fade-in p-4">
+            <nav className="flex flex-col space-y-4 p-4">
               <NavLinks onClick={() => setMobileMenuOpen(false)} />
-              <div className="flex flex-col space-y-2 pt-2">
+              <div className="flex flex-col space-y-4 pt-4">
                 <Link href="/auth/login">
                   <Button variant="outline" size="sm" className="w-full">
                     Entrar

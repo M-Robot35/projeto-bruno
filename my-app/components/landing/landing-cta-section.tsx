@@ -34,36 +34,31 @@ export function CtaSection() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative w-full py-12 md:py-24 lg:py-32 overflow-hidden">
-      {/* Fundo dinâmico conforme tema */}
-      <div
-        className={`absolute inset-0 transition-colors duration-500 ${
-          resolvedTheme === "dark"
-            ? "bg-grid-dark"
-            : "bg-gradient-to-br from-emerald-50 via-white to-emerald-50"
+    <section
+      ref={sectionRef}
+      className={`relative w-full py-12 md:py-24 lg:py-32 overflow-hidden ${resolvedTheme === "dark" ? "bg-neutral-900 text-white" : ""
         }`}
-      />
-      <div
-        className={`absolute inset-0 opacity-30 transition-opacity duration-500 ${
-          resolvedTheme === "dark" ? "bg-grid-dark" : "bg-grid"
-        }`}
-      />
-      <div
-        className={`absolute -top-24 -left-24 h-96 w-96 rounded-full opacity-20 blur-3xl transition-colors duration-500 ${
-          resolvedTheme === "dark" ? "bg-emerald-900" : "bg-emerald-200"
-        }`}
-      />
-      <div
-        className={`absolute -bottom-24 -right-24 h-96 w-96 rounded-full opacity-20 blur-3xl transition-colors duration-500 ${
-          resolvedTheme === "dark" ? "bg-emerald-900" : "bg-emerald-200"
-        }`}
-      />
+    >
+      {/* Background elements */}
+      {resolvedTheme === "dark" ? (
+        <>
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-900 via-black to-emerald-900 opacity-40"></div>
+          <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-emerald-800 opacity-20 blur-3xl"></div>
+          <div className="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-emerald-800 opacity-20 blur-3xl"></div>
+        </>
+      ) : (
+        <>
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-emerald-50"></div>
+          <div className="absolute inset-0 bg-grid opacity-30"></div>
+          <div className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-emerald-200 opacity-20 blur-3xl"></div>
+          <div className="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-emerald-200 opacity-20 blur-3xl"></div>
+        </>
+      )}
 
       <div className="container relative px-4 md:px-6">
         <div
-          className={`flex flex-col items-center justify-center space-y-4 text-center transition-all duration-700 ${
-            isVisible ? "opacity-100" : "opacity-0 translate-y-10"
-          }`}
+          className={`flex flex-col items-center justify-center space-y-4 text-center transition-all duration-700 ${isVisible ? "opacity-100" : "opacity-0 translate-y-10"
+            }`}
         >
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
@@ -74,26 +69,32 @@ export function CtaSection() {
             </p>
           </div>
           <div className="flex flex-col gap-2 min-[400px]:flex-row">
-             <Link href="https://wa.me/31985019300?text=Quero%20uma%20demonstração" target="_blank" rel="noopener noreferrer" >
-            <Button
-              size="lg"
-              className="group relative overflow-hidden bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300"
-            >
-              <span className="relative z-10">Experimente grátis por 3 dias</span>
-              <ArrowRight className="relative z-10 ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-emerald-600 to-emerald-700 opacity-0 transition-opacity group-hover:opacity-100"></div>
-            </Button>
+
+            <Link href="https://wa.me/31985019300?text=Quero%20uma%20demonstração" target="_blank" rel="noopener">
+
+              <Button
+                size="lg"
+                className="group relative overflow-hidden bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300"
+              >
+                <span className="relative z-10">Experimente grátis por 3 dias</span>
+                <ArrowRight className="relative z-10 ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-emerald-600 to-emerald-700 opacity-0 transition-opacity group-hover:opacity-100"></div>
+              </Button>
             </Link>
-              <Link href="https://wa.me/31985019300?text=Quero%20uma%20demonstração" target="_blank" rel="noopener noreferrer" >
-           
-            <Button
-              size="lg"
-              variant="outline"
-              className="group border-emerald-200 hover:bg-emerald-50 transition-all duration-300"
-            >
-              Agendar demonstração
-            </Button>
+            <Link href="https://wa.me/31985019300?text=Quero%20uma%20demonstração" target="_blank" rel="noopener ">
+
+              <Button
+                size="lg"
+                variant="outline"
+                className={`group transition-all duration-300 ${resolvedTheme === "dark"
+                    ? "border-emerald-800 hover:bg-emerald-900 text-white"
+                    : "border-emerald-200 hover:bg-emerald-50"
+                  }`}
+              >
+                Agendar demonstração
+              </Button>
             </Link>
+
           </div>
           <p className="text-xs text-muted-foreground">
             Não é necessário cartão de crédito. Cancele a qualquer momento.
