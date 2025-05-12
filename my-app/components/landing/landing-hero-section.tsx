@@ -83,7 +83,7 @@ export function HeroSection() {
                 </p>
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <Link href="https://wa.me/31985019300?text=Quero%20uma%20demonstração" target="_blank" rel="noopener noreferrer" passHref>
+                <Link href="https://wa.me/31985019300?text=Quero%20uma%20demonstração" target="_blank" rel="noopener noreferrer">
                   <Button
                     size="lg"
                     className="group relative overflow-hidden bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 dark:from-emerald-600 dark:to-emerald-700 dark:hover:from-emerald-500 dark:hover:to-emerald-600 transition-all duration-300"
@@ -93,7 +93,7 @@ export function HeroSection() {
                     <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-emerald-600 to-emerald-700 dark:from-emerald-500 dark:to-emerald-600 opacity-0 transition-opacity group-hover:opacity-100"></div>
                   </Button>
                 </Link>
-                <Link href="https://wa.me/31985019300?text=Quero%20agendar%20uma%20demonstração" target="_blank" rel="noopener noreferrer" passHref>
+                <Link href="https://wa.me/31985019300?text=Quero%20agendar%20uma%20demonstração" target="_blank" rel="noopener noreferrer">
 
                   <Button
                     size="lg"
