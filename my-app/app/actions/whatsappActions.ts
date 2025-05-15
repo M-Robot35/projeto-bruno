@@ -15,18 +15,39 @@ export async function whatsappAllInstance():Promise<IEvolutionInstance[]>{
     return instancias   
 }
 
+export async function InsertInstance(){
+
+}
+
 // pega somente as instancias do usuario logado
 export async function whatsappInstanceByUser():Promise<IEvolutionInstance[]>{
     const {id,email,role,name} = await sessionUserAction()
     
     const instancias= await WhatsappMessage.instancia.instancia_all()
     if(!instancias) return []
+    
+    // verifica se esta connectado e atualiza o BD
+    instancias.forEach(async instanc =>{
+        const instName = instanc.name
+        const instStatus = instanc.connectionStatus
+        const instOwner = instanc.ownerJid
 
-    // pega as instancias somente do usuario
+        if(instStatus === 'open' && instOwner){
+            const checkStatus= await instanciaModel.findByInstanceName(instName)
+            if( checkStatus && !checkStatus.numero){
+                await instanciaModel.update(id,instName,{
+                    numero: instOwner,
+                    statusConnection: instStatus
+                })
+            }
+        }
+    })    
+
+    // pega as instancias somente do usuario no BD
     const instanceUser= await (await instanciaModel.findAllUser(id)).map(instanceId => instanceId.hash)    
 
     // filtra somente as instancias que o usuario criou
-    return instancias.filter(ins => instanceUser.includes(ins.id))  
+    return instancias.filter(ins => instanceUser.includes(ins.id))
 }
 
 

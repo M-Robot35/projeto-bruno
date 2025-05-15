@@ -1,9 +1,7 @@
 import { Logs } from "@/app/core/logs";
-import WhatsappMessage from "../ev-evolution";
-//import botMessageModel from "@/database/db-model/botMessage-model";
-import userModel from "@/app/database/db-model/user-model";
-//import userMessageStatusModel from "@/database/db-model/userMessageStatus-model";
-import instanciaModel from "@/app/database/db-model/instancia-model";
+import { botGetByName, botType } from "@/app/controller/bot/bot-getController";
+import { promptGetController, PromptType } from "@/app/controller/prompt/prompt-getController";
+import { sendMessageText } from "../ev-componentes/sendMessageText";
 
 
 export class WebhookMsgUpsertDTO{
@@ -51,22 +49,27 @@ export class WebhookMsgUpsertDTO{
 export type WebhookUpsert = {
     event: "messages.upsert";
     instance: string;
+    
     data: {
       key: {
         remoteJid: string;
         fromMe: boolean;
         id: string;
       };
+      
       pushName: string;
+      
       message: {
         conversation: string;
         messageContextInfo: Record<string, any>; // Ajuste conforme necessário
       };
+      
       messageType: string;
       messageTimestamp: number;
       instanceId: string;
       source: string;
     };
+    
     destination: string;
     date_time: string;
     sender: string;
@@ -74,102 +77,122 @@ export type WebhookUpsert = {
     apikey: string;
 };
 
+// 5 minutos
+const PAUSE_DURATION = 5 * 60 * 1000;
 
-const PAUSE_DURATION = 5 * 60 * 1000; // 5 minutos em milissegundos
+export class WebhookMsgUpsert extends WebhookMsgUpsertDTO {
+    // MENSAGENS DE TEXTO
+    msgUsuario:boolean=false      // enviar mensagem para somente usuarios
+    msgUgrupo:boolean=false      // enviar mensagem somente para grupo    
+    // BOT
+    protected bot:botType|null= null
+    protected prompt:PromptType[]|null= null
 
-export class WebhookMsgUpsert extends WebhookMsgUpsertDTO{
-    constructor(data: any){
-        if(data.event !== 'messages.upsert'){
-            throw new Error('Event is required')
-        }
-        super(data)
+  constructor(data: any) {
+    if (data.event !== "messages.upsert") {
+      throw new Error("Event is required");
     }
+    super(data);
 
-    // async execute(){
-    //     const now = new Date()
-    //     // pegar usuario pela instance
-    //     const user = await this.checkBotStatus()
+  }
 
-    //     if (!this.fromMe) {
-    //         // Atualiza o tempo de resposta do usuário ao enviar uma mensagem
-    //         const updateUserMessageStatus = await userMessageStatusModel.updateMessageStatus(this.instance, { timeToAnswer: now.getTime() })
-    //         if(!updateUserMessageStatus){
-    //             Logs.error('WebhookMsgUpsert',`Erro ao atualizar o tempo de resposta do usuário ${user.id} para a instância ${this.instance}`)
-    //             return
-    //         }            
-    //         return;
-    //     }
-    //     const userMessageStatus = await userMessageStatusModel.findByUserAndInstance(user.id, this.instance)
+  async execute() {
+    try {
+      const now = Date.now();
+      await this.verifyBotStatus();
+
+      if (this.fromMe) return;
+
+      if(this.bot && this.bot.status === 'ATIVO'){
+        `pegar o prompt
+        jogar dentro da open ai
+        devolver a resposta para o usuario
         
-    //     // Verifica se já passaram 5 minutos desde a última mensagem        
-    //     if (userMessageStatus && now.getTime() - userMessageStatus.timeToAnswer < PAUSE_DURATION) {
-    //         Logs.success("WebhookMsgUpsert", `Bot pausado para usuário ${user.id}, aguardando tempo limite.`);
-    //         return;
-    //     }      
+        `
+        if(this.prompt.length > 0){
+            for(let i=0; i <  this.prompt.length; i++){
+                console.log(this.prompt[i].content + "\n\n")
+                this.prompt[i].content + "\n\n"
+            }
+        }
 
+      }
 
-    //     // Buscar o status do bot para este usuário
-    //     const botStatus = await botMessageModel.findByUserInstance(user.id, this.instance)
+      // Atualizar tempo de resposta do usuário
+    //   await userMessageStatusModel.updateMessageStatus(this.instance, { timeToAnswer: now.getTime() });
+
+    //   const userMessageStatus = await userMessageStatusModel.findByUserAndInstance(user.id, this.instance);
+    //   if (userMessageStatus?.isBlocked) {
+    //     Logs.error("WebhookMsgUpsert", `Bot bloqueado para o usuário ${this.apikey} - ${this.remoteJid}`);
+    //     return;
+    //   }
+
+    //   if (now.getTime() - userMessageStatus.timeToAnswer < PAUSE_DURATION) {
+    //     Logs.success("WebhookMsgUpsert", `Aguardando tempo limite do bot para ${user.id}`);
+    //     return;
+    //   }
+
+    //   const botStatus = await botMessageModel.findByUserInstance(user.id, this.instance);
+    //   if (!botStatus?.isActive) {
+    //     Logs.error("WebhookMsgUpsert", `Bot inativo para ${this.apikey} - ${this.remoteJid}`);
+    //     return;
+    //   }
+
+      // Verifica se a mensagem existe e é do tipo texto
+      if (!this.fromMe && this.message && this.messageType === "conversation") {
+        const usergroup= this.remoteJid.split('@')[1]
         
-        
-    //     if(userMessageStatus.isBlocked){
-    //         Logs.error('WebhookMsgUpsert',`Bot está bloqueado para o usuário ${this.apikey} e número ${this.remoteJid}`)            
-    //         return
-    //     }
+        // mensagem somente para usuarios
+        if(this.msgUsuario && usergroup.startsWith('s')){
+            await sendMessageText({
+                apikey: this.apikey,
+                instance: this.instance,
+                message: 'ok', // MENSAGEM A SER ENVIADA PARA O USUARIO
+                number: this.remoteJid
+            })
+            return
+        }
 
-    //     if(botStatus.isActive){
-    //         Logs.error('WebhookMsgUpsert',`Bot não está ativo para o usuário ${this.apikey} e número ${this.remoteJid}`)            
-    //         return
-    //     }
+        // mensagem somente para grupos
+        if(this.msgUgrupo && usergroup.startsWith('g')){
+            await sendMessageText({
+                apikey: this.apikey,
+                instance: this.instance,
+                message: 'ok 2', // MENSAGEM A SER ENVIADA PARA O USUARIO
+                number: this.remoteJid
+            })
+            return
+        }
 
-    //     this.sendMessage()
-    // }        
+        // mensagem quando o usuario não especificar
+        if(!this.msgUgrupo && !this.msgUsuario){
+            await sendMessageText({
+                apikey: this.apikey,
+                instance: this.instance,
+                message: 'ok 3', // MENSAGEM A SER ENVIADA PARA O USUARIO
+                number: this.remoteJid
+            })
+            return
+        }
 
-    // private async sendMessage(){
-    //     if(this.fromMe){
-    //         return
-    //     }       
+      } else {
+        Logs.error("WebhookMsgUpsert", `Mensagem inválida recebida de ${this.remoteJid}`);
+      }
+    } catch (error) {
+      Logs.error("WebhookMsgUpsert", `[ ERROR CATCHE ] ${error}`);
+    }
+  }  
 
-    //     const message = await WhatsappMessage
-    //     .messagem
-    //     .sendMessageText({
-    //         apikey:this.apikey,
-    //         instance:this.instance,
-    //         number:this.remoteJid,
-    //         message:this.message
-    //     })
-    //     Logs.success('WebhookMsgUpsert',`Mensagem enviada com sucesso para ${this.remoteJid}`)
-    // }
+  private async verifyBotStatus() {
+    try{
+        const bot = await botGetByName(this.instance);
+        if(!bot) return        
+        const promptBot = await promptGetController(bot.id); 
 
-    // private async checkBotStatus(){
-    //     const userInstace= await instanciaModel.findByInstanceName(this.instance)
-    //     const user = await userModel.findById(userInstace.userId)
-    //     const botExists = await botMessageModel.findByUserInstance(user.id, this.instance)
-    //     const userMessageStatus = await userMessageStatusModel.findByUserAndInstance(user.id, this.instance)
-        
-    //     if(!userInstace.numero || userInstace.numero !== ''){
-    //         await instanciaModel.update(user.id, this.instance, {
-    //             numero: this.sender,
-    //             baseCode: ''
-    //         })
-    //     }
-        
-    //     if(!botExists){
-    //         await botMessageModel.create({
-    //             userId: user.id,
-    //             instanceName: this.instance
-    //         })
-    //         Logs.success('WebhookMsgUpsert',`Bot criado com sucesso para o usuário ${user.id}`) 
-    //     }
-
-    //     if(!userMessageStatus){
-    //         await userMessageStatusModel.create({
-    //             userId: user.id,
-    //             instanceName: this.instance,
-    //             number: this.remoteJid,
-    //         })
-    //         Logs.success('WebhookMsgUpsert',`Status do bot criado com sucesso para o usuário ${user.id}`)
-    //     }
-    //     return user        
-    // }
+        this.bot=bot
+        this.prompt=promptBot
+    }catch(e){
+        Logs.error("verifyBotStatus", `[ ERROR CATCHE ] ${JSON.stringify(e)}`);
+    }
+  }
 }

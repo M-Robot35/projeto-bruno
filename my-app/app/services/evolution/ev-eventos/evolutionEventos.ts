@@ -6,7 +6,7 @@ import { Logs } from "@/app/core/logs";
 import {  WebhookConnectionUpdateDTO } from "../ev-webhook/webhook-msg-connection";
 import instanciaModel from "@/app/database/db-model/instancia-model";
 import { sessionUserAction } from "@/app/actions/getSectionAction";
-
+import { botCreate } from "@/app/controller/bot/bot-createController";
 
 export function respondeEvento<T=any>(success:boolean ,message:string, data:T){
     if(!success || !message){
@@ -49,13 +49,20 @@ export type TypeEventsName=
 |"MESSAGE_POLL"
 export const eventsEvolution= new EventDefault<TypeEventsName>()
 
-// Cria o 
+
+eventsEvolution.on('INSTANCIA_CRIAR', async ( event:typeDataInstance<InstanceCreateEvolution> )=>{  
+    
+    
+})
+
+
 eventsEvolution.on('INSTANCIA_CRIAR', async ( event:typeDataInstance<InstanceCreateEvolution> )=>{  
     const { success, message, data }= event
     if(!success){
         Logs.error('INSTANCIA_CRIAR', message)
         return
     }
+
     const {id}= await sessionUserAction()
     const { hash, qrcode, settings, rabbitmq, ...rest }= data
 
@@ -68,28 +75,14 @@ eventsEvolution.on('INSTANCIA_CRIAR', async ( event:typeDataInstance<InstanceCre
         baseCode:'',
         statusConnection:rest.instance.status
     })
-})
 
-
-eventsEvolution.on('INSTANCIA_CRIAR', async ( event:typeDataInstance<InstanceCreateEvolution> )=>{  
-    const { success, message, data }= event
-    if(!success){
-        Logs.error('INSTANCIA_CRIAR', message)
+    const createBot= await botCreate(save.id, save.instanciaName)
+    if(!createBot){
+        Logs.error('INSTANCIA_CRIAR', ` [ INSTANCIA_CRIAR ]= ${JSON.stringify(createBot)}`)
         return
     }
-    const {id}= await sessionUserAction()
-    const { hash, qrcode, settings, rabbitmq, ...rest }= data
-
-    // salva a instancia do usuario no BD
-    const save= await instanciaModel.create({
-        userId:id,
-        hash:rest.instance.instanceId,
-        instanciaName:rest.instance.instanceName,
-        numero:'',
-        baseCode:'',
-        statusConnection:rest.instance.status
-    })
 })
+
 
 // deleta a instancia
 eventsEvolution.on('INSTANCIA_DELETE', async( event:typeDataInstance<InstanceCreateEvolution> )=>{  
@@ -99,12 +92,18 @@ eventsEvolution.on('INSTANCIA_DELETE', async( event:typeDataInstance<InstanceCre
         Logs.error('INSTANCIA_DELETE', message)
         return
     }
+    
     const {id}= await sessionUserAction()
     const deleteInstance:any= data
     const { instance }= deleteInstance
     
     try{
-        await instanciaModel.delete(id, instance)
+        const deleteInstance= await instanciaModel.delete(id, instance)
+        const deleteBot= await botCreate(deleteInstance.id, deleteInstance.instanciaName)
+        if(!deleteBot){
+            Logs.error('INSTANCIA_DELETE', ` [ INSTANCIA_DELETE ]= ${JSON.stringify(deleteBot)}`)
+            return
+        }
     }catch(error){
         Logs.error('INSTANCIA_DELETE', JSON.stringify(error))
     }

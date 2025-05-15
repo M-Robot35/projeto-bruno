@@ -1,5 +1,8 @@
 import HttpRequests from "@/app/core/helpers/HttpRequests";
 import { Logs } from "@/app/core/logs";
+import { SchemaCreateInstance } from "./ev-validacoesSchemas/createInstanceSchema";
+import { SchemaDeleteInstance } from "./ev-validacoesSchemas/deleteInstanceSchema";
+import { SchemaLogoutInstance } from "./ev-validacoesSchemas/logoutInstanceSchema";
 import { 
     IEvolutionInstance, 
     InstanciaRestartType,
@@ -11,15 +14,25 @@ type interfaceOptionEnum = "WHATSAPP-BAILEYS" | "WHATSAPP-BAILEYS" | "WHATSAPP-B
 
 
 interface InstanceOptions {
-    qrcode: boolean
-    integration: interfaceOptionEnum
+    qrcode?: boolean
+    integration?: interfaceOptionEnum
 }
 
 export default class EvInstancia {
 
     constructor(private data:EvolutionManage){ }
 
-    async instancia_criar( instanceName:string, options?:InstanceOptions): Promise<InstanceCreateEvolution | null>{
+    async instancia_criar( instanceName:string, options?:InstanceOptions): Promise<InstanceCreateEvolution | null >{
+        const check = await SchemaCreateInstance({
+            instanceName,
+            integration: options?.integration,
+            qrcode: options?.qrcode
+        })
+        
+        if(!check.success){
+            return null
+        }        
+       
         if(!instanceName){
             eventsEvolution.emit('INSTANCIA_CRIAR', respondeEvento(false, 'Não foi passado o parametro  InstanceName', null) )
             return null
@@ -127,13 +140,20 @@ export default class EvInstancia {
     }
 
     async instancia_delete(instance:string){
-        if(!instance){
+        const check = await SchemaDeleteInstance({
+            instanceName:instance
+        })
+        
+        if(!check.success){
             Logs.error('instancia_delete', 'Não foi passado o parametro  instance')
-            eventsEvolution.emit('INSTANCIA_DELETE', respondeEvento(false, 'Não foi passado o parametro  instance', null) )
+            eventsEvolution.emit('INSTANCIA_DELETE', respondeEvento(false, 'Não foi passado o parametro  instance', JSON.stringify(check)) )
             return null
         }
 
         try{
+            await this.instancia_logout(instance)
+            await new Promise((resolve)=>{setTimeout(resolve, 5000)})
+
             const url=`${this.data.urlCompleta}/instance/delete/${instance}`
             const execute= await HttpRequests.request({
             method: 'DELETE',            
@@ -142,6 +162,11 @@ export default class EvInstancia {
                 apikey: this.data.publicKey
             },
             })
+
+            if(!execute){
+                Logs.error("instancia_delete",`Não foi possivel deletar a instancia [ ${instance} ]==   ${JSON.stringify(execute)}`)
+                return null
+            }
             const response= await execute
             eventsEvolution.emit('INSTANCIA_DELETE', respondeEvento(true, 'Instância deletada com sucesso', {instance, ...response}) )
             return response
@@ -152,9 +177,13 @@ export default class EvInstancia {
     }
 
     async instancia_logout(instance:string){
-        if(!instance){
-            Logs.error('instancia_logout', 'Não foi passado o parametro  instance')
-            eventsEvolution.emit('INSTANCIA_LOGOUT', respondeEvento(false, 'Não foi passado o parametro  instance', null) )
+        const check = await SchemaLogoutInstance({
+            instanceName:instance
+        })
+        
+        if(!check.success){
+            Logs.error('instancia_delete', 'Não foi passado o parametro  instance')
+            eventsEvolution.emit('INSTANCIA_LOGOUT', respondeEvento(false, 'Não foi passado o parametro  instance', JSON.stringify(check)) )
             return null
         }
         

@@ -2,7 +2,22 @@ import HttpRequests from "@/app/core/helpers/HttpRequests";
 import { Logs } from "@/app/core/logs";
 import EvolutionManage from "./ev-menage";
 import { eventsEvolution, respondeEvento } from "./ev-eventos/evolutionEventos";
+import z from 'zod'
 
+export const sendMessageSchema= z.object({
+    apikey: z
+        .string({message:"precisa ter a apikey"})
+        .trim(), 
+    instance: z
+        .string({message:"precisa ter a instancia"})
+        .trim(), 
+    message: z
+        .string({message:"precisa ter a message"})
+        .trim(), 
+    number: z
+        .string({message:"precisa ter a number"})
+        .trim()
+})
 
 interface IMessageOptions {
     delay?: number
@@ -27,12 +42,15 @@ export default class EvMessage {
     
     constructor( private data:EvolutionManage ){}
 
-    async sendMessageText(data:IMessageData, options?:IMessageOptions){
-        if(!data.message || !data.apikey || !data.instance || !data.number){
-            eventsEvolution.emit('MESSAGE_TEXT', respondeEvento(false, 'Falta uma propriedade [number-apikey-instance-message]', null) )
-            Logs.error('sendMessageText', 'Falta uma propriedade [number-apikey-instance-message]')
-            return  
+    async sendMessageText(data:IMessageData, options?:IMessageOptions){       
+        const verify = sendMessageSchema.safeParse(data)
+        
+        if(!verify.success){
+            const err= verify.error.flatten().fieldErrors
+            Logs.error(`[ EXECUTANDO ][ ERROR ] [EV SEND MESSAGE ]= ${err} `, JSON.stringify(err))
+            return
         }
+
         const url= `${this.data.urlCompleta}/message/sendText/${data.instance}`
 
         const body = {

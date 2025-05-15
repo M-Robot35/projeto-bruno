@@ -64,6 +64,7 @@ class BotModel {
             return null;
         }
     }
+    
     async update(id: string, data: Partial<BotCreateType>): Promise<outputType | null> {
         try {
             const existingBot = await this.database.findFirst({

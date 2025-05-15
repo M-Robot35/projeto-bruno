@@ -28,7 +28,7 @@ export default function InstanciasTabs({ apiKey, instanceName }: IIinstaceParams
       case "profile":
         return <InstanceProfile instanceName={instanceName} apikey={apiKey} />;
       case "IA".toLowerCase():
-        return <IaConfig />;
+        return <IaConfig name={instanceName}/>;
       case "proxy".toLowerCase():
         return <InstanceProxy apiKey={apiKey} instanceName={instanceName} />;
       case "webhook".toLowerCase():

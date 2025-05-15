@@ -4,7 +4,6 @@ import { Lock, Mail, ArrowLeft } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useActionState, useState } from "react";
 import Link from "next/link";
-import { toast } from "sonner";
 import RegisterFormAction from "@/app/actions/registerFormAction";
 
 export default function RegisterForm() {  
@@ -12,7 +11,7 @@ export default function RegisterForm() {
 
   if(state?.success){
     new Promise(resolve => setTimeout(resolve,8000))
-    signIn(undefined, { callbackUrl: "/auth/login" });
+    //signIn(undefined, { callbackUrl: "/auth/login" });
   } 
 
   return (

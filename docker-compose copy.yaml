@@ -1,30 +1,42 @@
 version: '3.9'
 services:
   app:
-    image: whatsapp
-    container_name: app
+    image: thiago723/whatsappbot:0.0.4
+
+    networks:
+      - npm_public
+      - wwp_bot
+
     environment:
-      - SKIP_DB=false  #skipar o BD para fazer a build da imagem docker
-      - AUTH_SECRET="BoySsEeu0SFtpZKBUVg9omevcSHlfyxzhc3JdhMOZ4U="
+      - SKIP_DB=true  #skipar o BD para fazer a build da imagem docker
+      - AUTH_SECRET=BoySsEeu0SFtpZKBUVg9omevcSHlfyxzhc3JdhMOZ4U=
 
       - DATABASE_URL=postgresql://postgres:parangarito12@db:5432/bruno
 
       # NextAuth
-      - NEXTAUTH_URL=http://localhost:3000 # mudar para o dominio que irá usar
-      - NEXTAUTH_SECRET='klfdjalreyhwpowhbjghjsarlkjrwghrw'
+      - NEXTAUTH_URL=https://zapqi.com.br
+      - AUTH_TRUST_HOST=https://zapqi.com.br
+      - NEXTAUTH_URL_INTERNAL=http://app:3099
+
+      #- NEXTAUTH_URL_INTERNAL=https://zapqi.com.br
+      - NEXTAUTH_SECRET=0johO5lljnbfY43sT0pmr8W3r1CWhuybfPS260SWHec=
+      - TRUST_HOST=true
 
       # Evolution
       - EVOLUTION_URL=http://evolution-api:8080
       - EVOLUTION_APIKEY=minhasenhasecreta  
     ports:
-      - 3000:3000
+      - 3099:3000
 
 
   # EVOLTION API ====================================
   evolution-api:
-    container_name: evolution_api
     image: atendai/evolution-api:v2.1.1
-    restart: always
+    
+    networks:
+      - npm_public
+      - wwp_bot
+
     environment:
       - SERVER_URL=http://localhost:8080
       - DEL_INSTANCE=false
@@ -61,7 +73,11 @@ services:
   # IMAGEM DO N8N  ====================================
   n8n:
     image: n8nio/n8n:1.90.2
-    restart: always
+
+    networks:
+      - npm_public
+      - wwp_bot
+
     ports:
       - "5678:5678"
     environment:
@@ -77,7 +93,11 @@ services:
 
   flowise:
         image: flowiseai/flowise:2.2.6
-        restart: always
+
+        networks:
+          - npm_public
+          - wwp_bot
+
         environment:
          - FLOWISE_USERNAME=user
          - FLOWISE_PASSWORD=1234
@@ -93,7 +113,11 @@ services:
   # RabbitMq ====================================
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: rabbitmq
+
+    networks:
+      - npm_public
+      - wwp_bot
+
     ports:
       - 5672:5672
       - 15672:15672  #dashboard
@@ -104,7 +128,11 @@ services:
   # DB POSTGRES  ====================================
   db:
     image: postgres:latest
-    restart: always
+
+    networks:
+      - npm_public
+      - wwp_bot
+
     environment:
       POSTGRES_PASSWORD: parangarito12
       POSTGRES_DB: evolution
@@ -117,7 +145,11 @@ services:
   # PAINEL ADMIN DB ====================================
   adminer:
     image: adminer
-    restart: always
+
+    networks:
+      - npm_public
+      - wwp_bot
+
     ports:
       - "8082:8080"
     depends_on:
@@ -125,9 +157,12 @@ services:
   
   # REDIS ====================================
   evo_redis:
-    image: redis:latest    
-    container_name: redis
-    restart: always
+    image: redis:latest
+
+    networks:
+      - npm_public
+      - wwp_bot
+
     volumes:
       - ./evolution_redis:/data
     ports:
@@ -136,12 +171,22 @@ services:
   # REDIS Painel====================================
   redis-insight:
     image: redis/redisinsight:latest
-    restart: always
+    networks:
+      - npm_public
+      - wwp_bot
+
     ports:
       - "5540:5540"
     volumes:
       - redis-insight:/data
-      
+
+
+networks:
+  npm_public:
+    external: true
+  wwp_bot:
+    external: true
+
 volumes:
   evolution_instances:
   pgdata:

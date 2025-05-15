@@ -8,7 +8,6 @@ const {
   dataTitle,
   dataAutors,
   dataDescription,
-  dataIcon,
   lenguage,
 }= frontConstants.metaData
 
@@ -29,7 +28,6 @@ export const metadata: Metadata = {
   title: dataTitle,
   description: dataDescription,
   authors: dataAutors,
-  icons: dataIcon
 };
 
 export default function RootLayout({

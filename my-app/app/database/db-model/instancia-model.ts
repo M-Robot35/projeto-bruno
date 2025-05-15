@@ -34,7 +34,11 @@ class InstanceModel {
             where: { userId, instanciaName }
         })
 
-        if( buscando ){
+        const duplicateNameInstance= await this.database.findFirst({
+            where: {instanciaName }
+        })
+
+        if( buscando || duplicateNameInstance){
             Logs.error('database create', `A instância [ ${data} ] já existe`)
             return null
         }        
@@ -61,6 +65,7 @@ class InstanceModel {
             const execute= await this.database.findFirst({
                 where: {instanciaName }
             })
+
             if( !execute ){
                 Logs.error('database findByInstanceName', `o Email [ ${instanciaName} ] Não existe`)
                 return null
@@ -104,7 +109,9 @@ class InstanceModel {
 
     async delete(userId:string, instanceName:string): Promise<outputType|null>
     {   
-        const busca= await this.findByInstanceName(instanceName)
+        const busca= await this.findByInstanceName(instanceName)        
+        if(!busca) return null
+
         const execute= await this.database.delete({
             where: {
                 id:busca!.id,

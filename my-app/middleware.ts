@@ -1,11 +1,14 @@
 //export { auth as middleware } from "@/auth"
 import { NextRequest,NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-
+import { cookies } from "next/headers";
 
 export async function middleware(request: NextRequest) {
     const { nextUrl } = request;
-    
+
+    const cookieStore = await cookies()
+    const token2 = cookieStore.get('__Secure-next-auth.session-token') || cookieStore.get('next-auth.session-token') 
+        
     try {    
       // Verifica o token JWT
       const token = await getToken({ 
@@ -21,7 +24,7 @@ export async function middleware(request: NextRequest) {
       
       // se estiver na pagina admin, redireciona para o dashboard
       if(nextUrl.pathname === '/admin'){
-        if(token){
+        if(token || token2){
           const loginUrl =new URL('/admin/dashboard', request.url);
           loginUrl.searchParams.set('callbackUrl', nextUrl.pathname);
           return NextResponse.redirect(loginUrl);

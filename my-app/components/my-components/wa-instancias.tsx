@@ -9,7 +9,6 @@ import {
     whatsappRestart
 } from "@/app/actions/whatsappActions"
 import WhatsaCreateInstanceUser from "./wa-createInstance"
-import { toast } from "sonner"
 import {
     User, 
     MessageCirclePlus,
@@ -114,13 +113,13 @@ export default function WaInstancias({instancia}:WaInstancias){
                     )
                 }
                 
-                <Table className="">
+                <Table className=" mt-4">
                     <TableCaption>Suas instancias do Whatsapp</TableCaption>
-                    <TableHeader>
+                    <TableHeader className="border rounded-2xl ">
                         <TableRow>
                         <TableHead className="">Instancias</TableHead>
                         <TableHead className="w-[180px]">Status</TableHead>
-                        <TableHead className="hidden sm:flex">Data</TableHead>
+                        <TableHead className="hidden sm:flex items-center">Data</TableHead>
                         <TableHead>Triggers</TableHead>
                         <TableHead className="">Actions</TableHead>
                         </TableRow>

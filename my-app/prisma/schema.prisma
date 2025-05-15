@@ -36,7 +36,7 @@ model User {
 model Instancia {
   id               String @id @default(cuid())
   userId           String
-  instanciaName    String
+  instanciaName    String @unique
   statusConnection String
   numero           String
   hash             String
@@ -148,8 +148,8 @@ enum LogType {
 model Prompt {
   id        String   @id @default(cuid())
   title     String
-  isActive  Boolean @default(false)
-  content   String // texto do prompt
+  isActive  Boolean  @default(false)
+  content   String? // texto do prompt
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   botId     String

@@ -1,21 +1,29 @@
 'use server'
 import BotModel from "@/app/database/db-model/bot-model"
 import { Logs } from "@/app/core/logs"
-import { botGetByName } from "./bot-get"
+import { botGetByName } from "./bot-getController"
+import z from 'zod'
+
+const botDeleteSchema= z.object({
+    instance: z.string().trim().min(3),
+})
 
 export async function botDelete(instance:string){
+    const validate= botDeleteSchema.safeParse({
+        instance
+    })
+
+    if(!validate.success){
+        Logs.error('botDelete', `bot Não existe ${instance}`)
+        return
+    }
     const botExistis= await botGetByName(instance)
 
     if(!botExistis){
         Logs.error('botDelete', `bot Não existe ${instance}`)
         return false
     } 
-
-    if(!instance || !botExistis){
-        Logs.error('botDelete', `falta parametro ${instance}`)
-        return false
-    } 
-    
+        
     const botInstance = new BotModel()
     const buscaBot= await botInstance.findByName(instance)
     

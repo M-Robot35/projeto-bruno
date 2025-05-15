@@ -44,6 +44,7 @@ export default function WhatsaCreateInstanceUser({...Props}:requerements){
     // ativa o Timer
     if(state.showCode && !isActive){
         setIsActive(true);
+        Props.handleReload()
     }
 
     useEffect(()=>{
