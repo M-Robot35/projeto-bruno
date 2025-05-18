@@ -1,9 +1,9 @@
-import WhatsappMessage from "../ev-evolution";
+import WhatsappMessage from "../evolution";
 import { sendMessageSchema } from "../ev-message";
 import { Logs } from "@/app/core/logs";
 
 
-function dividirMensagemPorPalavras(texto, limite = 1000): string[] {
+function dividirMensagemPorPalavras(texto:string, limite:number = 1000): string[] {
     const palavras = texto.split(' ');
     const partes = [];
     let parteAtual = '';

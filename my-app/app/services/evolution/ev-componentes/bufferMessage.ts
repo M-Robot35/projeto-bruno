@@ -9,12 +9,15 @@ para a IA e dar a resposta para o usuario
 
 `
 const buffers = new Map<string, BufferUsuario>();
-  
-export function receberMensagem(
+
+// 30 segundos
+const PAUSE_DURATION = 30 * 1000; // 30 segundos de pausa --- 5 minutos = 5×60×1000=300.000 milissegundos
+
+export function buffReceberMensagem(
     numero: string, 
     texto: string, 
     responderIA: (texto: string, numero: string) => Promise<void>, 
-    tempoEspera:number = 5000) 
+    tempoEspera:number = PAUSE_DURATION) 
 {
     
     let buffer = buffers.get(numero);

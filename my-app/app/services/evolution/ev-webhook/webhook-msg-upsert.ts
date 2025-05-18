@@ -2,9 +2,9 @@ import { Logs } from "@/app/core/logs";
 import { botGetByName, botType } from "@/app/controller/bot/bot-getController";
 import { promptGetController, PromptType } from "@/app/controller/prompt/prompt-getController";
 import { sendMessageText } from "../ev-componentes/sendMessageText";
+import { buffReceberMensagem } from "../ev-componentes/bufferMessage";
 
-
-export class WebhookMsgUpsertDTO{
+export class WebhookMsgUpsertMap{
     public instance:string|null = null;
     public fromMe:boolean|null = null;
     public id:string|null = null;
@@ -77,16 +77,15 @@ export type WebhookUpsert = {
     apikey: string;
 };
 
-// 5 minutos
-const PAUSE_DURATION = 5 * 60 * 1000;
 
-export class WebhookMsgUpsert extends WebhookMsgUpsertDTO {
-    // MENSAGENS DE TEXTO
-    msgUsuario:boolean=false      // enviar mensagem para somente usuarios
-    msgUgrupo:boolean=false      // enviar mensagem somente para grupo    
-    // BOT
-    protected bot:botType|null= null
-    protected prompt:PromptType[]|null= null
+export class WebhookMsgUpsert extends WebhookMsgUpsertMap {
+
+  // MENSAGENS DE TEXTO
+  msgUsuario:boolean=false      // enviar mensagem somente para usuarios
+  msgUgrupo:boolean=false      // enviar mensagem somente para grupo    
+  // BOT
+  protected bot:botType|null= null
+  protected prompt:PromptType[]|null= null
 
   constructor(data: any) {
     if (data.event !== "messages.upsert") {
@@ -100,43 +99,16 @@ export class WebhookMsgUpsert extends WebhookMsgUpsertDTO {
     try {
       const now = Date.now();
       await this.verifyBotStatus();
+      let responseMsg:string=''
 
       if (this.fromMe) return;
 
       if(this.bot && this.bot.status === 'ATIVO'){
-        `pegar o prompt
-        jogar dentro da open ai
-        devolver a resposta para o usuario
-        
-        `
-        if(this.prompt.length > 0){
-            for(let i=0; i <  this.prompt.length; i++){
-                console.log(this.prompt[i].content + "\n\n")
-                this.prompt[i].content + "\n\n"
-            }
-        }
-
+        const result = await this.aiMessageCreate()
+        responseMsg = result
+      }else{
+        return
       }
-
-      // Atualizar tempo de resposta do usuário
-    //   await userMessageStatusModel.updateMessageStatus(this.instance, { timeToAnswer: now.getTime() });
-
-    //   const userMessageStatus = await userMessageStatusModel.findByUserAndInstance(user.id, this.instance);
-    //   if (userMessageStatus?.isBlocked) {
-    //     Logs.error("WebhookMsgUpsert", `Bot bloqueado para o usuário ${this.apikey} - ${this.remoteJid}`);
-    //     return;
-    //   }
-
-    //   if (now.getTime() - userMessageStatus.timeToAnswer < PAUSE_DURATION) {
-    //     Logs.success("WebhookMsgUpsert", `Aguardando tempo limite do bot para ${user.id}`);
-    //     return;
-    //   }
-
-    //   const botStatus = await botMessageModel.findByUserInstance(user.id, this.instance);
-    //   if (!botStatus?.isActive) {
-    //     Logs.error("WebhookMsgUpsert", `Bot inativo para ${this.apikey} - ${this.remoteJid}`);
-    //     return;
-    //   }
 
       // Verifica se a mensagem existe e é do tipo texto
       if (!this.fromMe && this.message && this.messageType === "conversation") {
@@ -144,35 +116,20 @@ export class WebhookMsgUpsert extends WebhookMsgUpsertDTO {
         
         // mensagem somente para usuarios
         if(this.msgUsuario && usergroup.startsWith('s')){
-            await sendMessageText({
-                apikey: this.apikey,
-                instance: this.instance,
-                message: 'ok', // MENSAGEM A SER ENVIADA PARA O USUARIO
-                number: this.remoteJid
-            })
-            return
+          await this.sendMsg(responseMsg)
+          return
         }
 
         // mensagem somente para grupos
         if(this.msgUgrupo && usergroup.startsWith('g')){
-            await sendMessageText({
-                apikey: this.apikey,
-                instance: this.instance,
-                message: 'ok 2', // MENSAGEM A SER ENVIADA PARA O USUARIO
-                number: this.remoteJid
-            })
-            return
+          await this.sendMsg(responseMsg)
+          return
         }
 
         // mensagem quando o usuario não especificar
         if(!this.msgUgrupo && !this.msgUsuario){
-            await sendMessageText({
-                apikey: this.apikey,
-                instance: this.instance,
-                message: 'ok 3', // MENSAGEM A SER ENVIADA PARA O USUARIO
-                number: this.remoteJid
-            })
-            return
+          await this.sendMsg(responseMsg)
+          return
         }
 
       } else {
@@ -181,8 +138,45 @@ export class WebhookMsgUpsert extends WebhookMsgUpsertDTO {
     } catch (error) {
       Logs.error("WebhookMsgUpsert", `[ ERROR CATCHE ] ${error}`);
     }
-  }  
+  }
 
+  async aiMessageCreate():Promise<string>{
+    let upPrompt:string=''
+
+    if(this.prompt.length > 0){
+      for(let i=0; i <  this.prompt.length; i++){
+          if(this.prompt[i].isActive){
+            upPrompt+= ' ' + this.prompt[i].content + "\n\n"
+          }
+          
+      }
+      upPrompt= upPrompt.trim()
+    }
+    const userMsg= `
+      **Responsta de acodo com o script, não invente ou diga nada que não esteja escrito abaixo:**
+      ${upPrompt}
+
+      **Minha pergunta e:**
+      ${this.message}
+    `
+    console.log(`${userMsg}`)
+    // GERAR A MENSAGEM PELA IA  AQUI ... E RETORNAR A RESPOSTA
+    return 'qualquer coisa'
+  }
+
+  // ENVIA A MENSAGEM PARA O USÚARIO
+  async sendMsg(msg:string){
+    if(!msg) return
+    
+    await sendMessageText({
+      apikey: this.apikey,
+      instance: this.instance,
+      message: msg, 
+      number: this.remoteJid
+    })
+  }
+
+  // BUSCA OS BOT E PROMPTS ATIVOS DO USÚARIO
   private async verifyBotStatus() {
     try{
         const bot = await botGetByName(this.instance);

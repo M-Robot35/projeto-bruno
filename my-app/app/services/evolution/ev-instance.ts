@@ -55,9 +55,7 @@ export default class EvInstancia {
         try{
             const execute= await HttpRequests.post({
                 url,
-                headers: {
-                    apikey: this.data.publicKey
-                },
+                headers: {apikey: this.data.publicKey },
                 body
             })
 
@@ -76,9 +74,7 @@ export default class EvInstancia {
         try{
             const execute= await HttpRequests.get({
                 url,
-                headers: {
-                    apikey: this.data.publicKey
-                },
+                headers: { apikey: this.data.publicKey },
             })
     
             const response= await execute

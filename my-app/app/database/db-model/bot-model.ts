@@ -54,10 +54,12 @@ class BotModel {
             const execute = await this.database.findFirst({
                 where: { name }
             });
+            
             if (!execute) {
                 Logs.error('database findByName', `O bot com o nome [ ${name} ] não existe`);
                 return null;
             }
+            
             return execute;
         } catch (error) {
             Logs.error('database findByName', `Erro ao buscar o bot com o nome [ ${name} ]: ${error}`);

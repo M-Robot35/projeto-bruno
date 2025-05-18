@@ -1,5 +1,5 @@
 'use server'
-import WhatsappMessage from "../services/evolution/ev-evolution"
+import WhatsappMessage from "../services/evolution/evolution"
 import { sessionUserAction } from "./getSectionAction"
 import { IEvolutionInstance,InstanceCreateEvolution } from "../services/evolution/evoluitonTypes/instances-type"
 import { TypeGroupOutput } from "../services/evolution/evoluitonTypes/instances-type"
